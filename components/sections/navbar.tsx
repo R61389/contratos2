@@ -45,8 +45,8 @@ export function Navbar() {
           <span className="relative flex h-8 w-8 items-center justify-center rounded-full bg-volt text-ink shadow-glow transition-transform duration-300 group-hover:scale-105">
             <Sparkles className="h-4 w-4" strokeWidth={2.5} />
           </span>
-          <span className="font-display text-sm font-semibold tracking-[0.18em] text-white">
-            EVENTOS <span className="text-volt">CBBA</span>
+          <span className="font-display text-sm font-black tracking-[0.18em] text-white">
+            VIB<span className="text-volt">RA</span>
           </span>
         </a>
 
@@ -64,7 +64,7 @@ export function Navbar() {
         </nav>
 
         <div className="hidden lg:block">
-          <Button size="sm">Organiza tu evento</Button>
+          <Button size="sm">Organizar mi evento</Button>
         </div>
 
         <button
@@ -97,7 +97,7 @@ export function Navbar() {
               </a>
             ))}
             <Button size="sm" className="mt-2 w-full">
-              Organiza tu evento
+              Organizar mi evento
             </Button>
           </motion.div>
         )}

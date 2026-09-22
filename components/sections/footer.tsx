@@ -41,7 +41,7 @@ const COLUMNS = [
   },
   {
     title: "Contacto",
-    links: ["hola@eventoscbba.com", "+591 700 00000", "Cochabamba, Bolivia"],
+    links: ["hola@vibra.app", "+591 700 00000", "Cochabamba, Bolivia"],
   },
 ];
 
@@ -61,13 +61,13 @@ export function Footer() {
               <span className="flex h-8 w-8 items-center justify-center rounded-full bg-volt text-ink shadow-glow">
                 <Sparkles className="h-4 w-4" strokeWidth={2.5} />
               </span>
-              <span className="font-display text-sm font-semibold tracking-[0.18em] text-white">
-                EVENTOS <span className="text-volt">CBBA</span>
+              <span className="font-display text-sm font-black tracking-[0.18em] text-white">
+                VIB<span className="text-volt">RA</span>
               </span>
             </a>
             <p className="max-w-xs text-sm text-ink-mid">
-              La plataforma integral para organizar eventos sociales en
-              Cochabamba, todo desde un solo lugar.
+              Encuentra la mejor vibra para tu celebración: todo tu evento en
+              Cochabamba, desde un solo lugar.
             </p>
             <div className="flex gap-3 pt-2">
               {[InstagramIcon, FacebookIcon, TikTokIcon].map((Icon, i) => (
@@ -112,7 +112,7 @@ export function Footer() {
         </div>
 
         <div className="mt-16 flex flex-col items-center justify-between gap-4 border-t border-ink-light/10 py-8 text-xs text-ink-mid sm:flex-row">
-          <p>© {new Date().getFullYear()} Eventos CBBA. Todos los derechos reservados.</p>
+          <p>© {new Date().getFullYear()} VIBRA. Todos los derechos reservados.</p>
           <div className="flex gap-6">
             <a href="#" className="transition-colors hover:text-volt">
               Términos

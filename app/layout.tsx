@@ -15,7 +15,7 @@ const geist = Geist({
 });
 
 export const metadata: Metadata = {
-  title: "Eventos CBBA — Todo tu evento en un solo lugar",
+  title: "VIBRA — Encuentra la mejor vibra para tu celebración",
   description:
     "Contrata músicos, DJs, catering, bebidas, decoración y mucho más desde una sola plataforma. La forma moderna de organizar eventos en Cochabamba.",
 };
