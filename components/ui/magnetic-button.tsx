@@ -7,10 +7,11 @@ import { cn } from "@/lib/utils";
 
 export function MagneticButton({
   className,
+  wrapperClassName,
   strength = 0.35,
   children,
   ...props
-}: ButtonProps & { strength?: number }) {
+}: ButtonProps & { strength?: number; wrapperClassName?: string }) {
   const ref = useRef<HTMLButtonElement>(null);
   const x = useMotionValue(0);
   const y = useMotionValue(0);
@@ -35,7 +36,7 @@ export function MagneticButton({
       style={{ x: springX, y: springY }}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
-      className="inline-block"
+      className={cn("inline-block", wrapperClassName)}
     >
       <Button
         ref={ref}

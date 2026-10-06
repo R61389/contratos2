@@ -1,23 +1,16 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import Image from "next/image";
+import Link from "next/link";
 import useEmblaCarousel from "embla-carousel-react";
 import Autoplay from "embla-carousel-autoplay";
 import { motion } from "motion/react";
-import { Star, ChevronLeft, ChevronRight } from "lucide-react";
+import { Star, ChevronLeft, ChevronRight, ArrowUpRight } from "lucide-react";
 import { SectionHeading } from "@/components/ui/section-heading";
+import { PROVIDERS } from "@/lib/providers";
+import { formatBs } from "@/lib/format";
 import { cn } from "@/lib/utils";
-
-const PROVIDERS = [
-  { name: "Grupo Musical Eclipse", category: "Grupo Musical", rating: 4.9, price: "Bs 2,500", emoji: "🎸" },
-  { name: "Grupo Musical Fusión", category: "Grupo Musical", rating: 4.8, price: "Bs 2,200", emoji: "🎺" },
-  { name: "DJ NightFlow", category: "DJ", rating: 5.0, price: "Bs 1,800", emoji: "🎧" },
-  { name: "DJ ElectroWave", category: "DJ", rating: 4.7, price: "Bs 1,600", emoji: "🎛️" },
-  { name: "Catering Gourmet", category: "Catering", rating: 4.9, price: "Bs 90 / persona", emoji: "🍽️" },
-  { name: "Catering Premium", category: "Catering", rating: 4.8, price: "Bs 120 / persona", emoji: "🥘" },
-  { name: "Cervecería Andes Craft", category: "Bebidas", rating: 4.9, price: "Bs 25 / unidad", emoji: "🍺" },
-  { name: "Cervecería Valle Beer", category: "Bebidas", rating: 4.6, price: "Bs 22 / unidad", emoji: "🍻" },
-];
 
 export function ProvidersCarousel() {
   const [emblaRef, emblaApi] = useEmblaCarousel(
@@ -72,7 +65,7 @@ export function ProvidersCarousel() {
           <div className="-ml-4 flex">
             {PROVIDERS.map((p, i) => (
               <div
-                key={p.name}
+                key={p.slug}
                 className="min-w-0 shrink-0 grow-0 basis-[80%] pl-4 sm:basis-[45%] lg:basis-[30%]"
               >
                 <motion.div
@@ -80,24 +73,50 @@ export function ProvidersCarousel() {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true, margin: "-40px" }}
                   transition={{ duration: 0.5, delay: (i % 3) * 0.08 }}
-                  className="glass group flex h-full flex-col overflow-hidden rounded-2xl shadow-card transition-transform duration-300 hover:-translate-y-1 hover:shadow-glow"
+                  className="h-full"
                 >
-                  <div className="relative flex h-40 items-center justify-center bg-gradient-to-br from-white/5 to-transparent text-6xl">
-                    {p.emoji}
-                    <span className="absolute right-3 top-3 rounded-full bg-ink/70 px-2.5 py-1 text-[11px] font-medium text-ink-light backdrop-blur">
-                      {p.category}
-                    </span>
-                  </div>
-                  <div className="flex flex-1 flex-col gap-3 p-5">
-                    <h3 className="font-medium text-white">{p.name}</h3>
-                    <div className="flex items-center justify-between text-sm">
-                      <span className="flex items-center gap-1 text-volt">
-                        <Star className="h-4 w-4 fill-volt" />
-                        {p.rating.toFixed(1)}
+                  <Link
+                    href={`/proveedores/${p.slug}`}
+                    className="glass group flex h-full flex-col overflow-hidden rounded-2xl shadow-card transition-all duration-300 hover:-translate-y-1 hover:shadow-glow"
+                  >
+                    <div className="relative h-48 overflow-hidden">
+                      <Image
+                        src={p.heroImage}
+                        alt=""
+                        fill
+                        sizes="(max-width: 640px) 80vw, (max-width: 1024px) 45vw, 30vw"
+                        className="object-cover opacity-60 transition-transform duration-700 group-hover:scale-110"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/40 to-transparent" />
+                      <Image
+                        src={p.subject.src}
+                        alt={p.subject.alt}
+                        width={p.subject.width}
+                        height={p.subject.height}
+                        sizes="320px"
+                        className="absolute bottom-0 left-1/2 h-[88%] w-auto max-w-none -translate-x-1/2 object-contain object-bottom transition-transform duration-700 ease-out group-hover:scale-105"
+                      />
+                      <span className="absolute right-3 top-3 rounded-full bg-ink/70 px-2.5 py-1 text-[11px] font-medium text-ink-light backdrop-blur">
+                        {p.category}
                       </span>
-                      <span className="text-ink-mid">{p.price}</span>
                     </div>
-                  </div>
+                    <div className="flex flex-1 flex-col gap-3 p-5">
+                      <h3 className="flex items-center justify-between gap-2 font-medium text-white">
+                        {p.fullName}
+                        <ArrowUpRight className="h-4 w-4 shrink-0 text-ink-mid transition-all duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-volt" />
+                      </h3>
+                      <div className="flex items-center justify-between text-sm">
+                        <span className="flex items-center gap-1 text-volt">
+                          <Star className="h-4 w-4 fill-volt" />
+                          {p.rating.toFixed(1)}
+                        </span>
+                        <span className="text-ink-mid">
+                          Desde {formatBs(p.price.from)}
+                          {p.price.unit ? ` ${p.price.unit}` : ""}
+                        </span>
+                      </div>
+                    </div>
+                  </Link>
                 </motion.div>
               </div>
             ))}

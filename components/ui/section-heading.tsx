@@ -9,12 +9,14 @@ export function SectionHeading({
   description,
   align = "center",
   className,
+  titleClassName,
 }: {
   eyebrow?: string;
   title: React.ReactNode;
   description?: string;
   align?: "center" | "left";
   className?: string;
+  titleClassName?: string;
 }) {
   return (
     <div
@@ -40,7 +42,10 @@ export function SectionHeading({
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: "-80px" }}
         transition={{ duration: 0.6, delay: 0.08 }}
-        className="text-balance text-3xl font-semibold tracking-tight text-white sm:text-4xl md:text-5xl"
+        className={cn(
+          "text-balance text-3xl font-semibold tracking-tight text-white sm:text-4xl md:text-5xl",
+          titleClassName
+        )}
       >
         {title}
       </motion.h2>

@@ -1,18 +1,19 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { AnimatePresence, motion } from "motion/react";
 import { Menu, X, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 const LINKS = [
-  { label: "Inicio", href: "#inicio" },
-  { label: "Servicios", href: "#servicios" },
-  { label: "Proveedores", href: "#proveedores" },
-  { label: "Cómo funciona", href: "#como-funciona" },
-  { label: "Paquetes", href: "#paquetes" },
-  { label: "Contacto", href: "#contacto" },
+  { label: "Inicio", href: "/#inicio" },
+  { label: "Servicios", href: "/#servicios" },
+  { label: "Proveedores", href: "/#proveedores" },
+  { label: "Cómo funciona", href: "/#como-funciona" },
+  { label: "Paquetes", href: "/#paquetes" },
+  { label: "Contacto", href: "/#contacto" },
 ];
 
 export function Navbar() {
@@ -41,25 +42,25 @@ export function Navbar() {
             : "border border-transparent bg-transparent"
         )}
       >
-        <a href="#inicio" className="group flex items-center gap-2">
+        <Link href="/" className="group flex items-center gap-2">
           <span className="relative flex h-8 w-8 items-center justify-center rounded-full bg-volt text-ink shadow-glow transition-transform duration-300 group-hover:scale-105">
             <Sparkles className="h-4 w-4" strokeWidth={2.5} />
           </span>
           <span className="font-display text-sm font-black tracking-[0.18em] text-white">
             VIB<span className="text-volt">RA</span>
           </span>
-        </a>
+        </Link>
 
         <nav className="hidden items-center gap-1 lg:flex">
           {LINKS.map((link) => (
-            <a
+            <Link
               key={link.href}
               href={link.href}
               className="group relative rounded-full px-4 py-2 text-sm text-ink-light/80 transition-colors duration-300 hover:text-white"
             >
               {link.label}
               <span className="absolute inset-x-4 -bottom-0.5 h-px scale-x-0 bg-volt transition-transform duration-300 group-hover:scale-x-100" />
-            </a>
+            </Link>
           ))}
         </nav>
 
@@ -87,14 +88,14 @@ export function Navbar() {
             className="glass-strong absolute inset-x-4 top-[calc(100%+8px)] flex flex-col gap-1 rounded-3xl p-4 shadow-card lg:hidden"
           >
             {LINKS.map((link) => (
-              <a
+              <Link
                 key={link.href}
                 href={link.href}
                 onClick={() => setOpen(false)}
                 className="rounded-2xl px-4 py-3 text-sm text-ink-light transition-colors hover:bg-white/5 hover:text-white"
               >
                 {link.label}
-              </a>
+              </Link>
             ))}
             <Button size="sm" className="mt-2 w-full">
               Organizar mi evento
