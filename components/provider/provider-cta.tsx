@@ -29,7 +29,11 @@ export function ProviderCta({ provider }: { provider: Provider }) {
           className="absolute left-1/2 top-1/2 h-[480px] w-[480px] rounded-full bg-volt/20 blur-[120px]"
         />
         <div aria-hidden className="pointer-events-none absolute -right-24 -top-24 opacity-25 sm:-right-16 sm:-top-16">
-          <Emblem variant={provider.emblem} className="h-80 w-80 sm:h-[26rem] sm:w-[26rem]" />
+          {provider.logo ? (
+            <Image src={provider.logo.src} alt="" width={provider.logo.width} height={provider.logo.height} sizes="420px" className="h-80 w-auto sm:h-[26rem]" />
+          ) : (
+            <Emblem variant={provider.emblem} className="h-80 w-80 sm:h-[26rem] sm:w-[26rem]" />
+          )}
         </div>
         <div className="noise absolute inset-0 opacity-40" />
 

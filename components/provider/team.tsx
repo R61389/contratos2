@@ -84,10 +84,12 @@ function MemberCard({ member, index }: { member: TeamMember; index: number }) {
         </div>
 
         <div className="absolute inset-x-0 bottom-0 p-5">
-          <span className="inline-flex items-center rounded-full bg-volt px-2.5 py-0.5 text-[11px] font-bold text-ink">
-            {member.years} años de experiencia
-          </span>
-          <h3 className="mt-3 font-general text-xl font-semibold text-white">{member.name}</h3>
+          {member.years !== undefined && (
+            <span className="mb-3 inline-flex items-center rounded-full bg-volt px-2.5 py-0.5 text-[11px] font-bold text-ink">
+              {member.years} años de experiencia
+            </span>
+          )}
+          <h3 className="font-general text-xl font-semibold text-white">{member.name}</h3>
           <p className="text-sm text-ink-light/80">{member.role}</p>
         </div>
       </motion.div>

@@ -14,6 +14,7 @@ import { Reviews } from "@/components/provider/reviews";
 import { Packages } from "@/components/provider/packages";
 import { ProviderCta } from "@/components/provider/provider-cta";
 import { MobileBookBar } from "@/components/provider/mobile-book-bar";
+import { ProviderMusic } from "@/components/provider/music-player";
 
 type Params = Promise<{ slug: string }>;
 
@@ -45,19 +46,21 @@ export default async function ProviderPage({ params }: { params: Params }) {
 
   return (
     <main className="relative overflow-x-clip">
-      <Navbar />
-      <ProviderHero provider={provider} />
-      <ProviderInfo provider={provider} />
-      <Booking provider={provider} />
-      <Promo provider={provider} />
-      <Gallery provider={provider} />
-      <Videos provider={provider} />
-      <Team provider={provider} />
-      <Reviews provider={provider} />
-      <Packages provider={provider} />
-      <ProviderCta provider={provider} />
-      <Footer />
-      <MobileBookBar provider={provider} />
+      <ProviderMusic provider={provider}>
+        <Navbar />
+        <ProviderHero provider={provider} />
+        <ProviderInfo provider={provider} />
+        <Booking provider={provider} />
+        <Promo provider={provider} />
+        <Gallery provider={provider} />
+        <Videos provider={provider} />
+        <Team provider={provider} />
+        <Reviews provider={provider} />
+        <Packages provider={provider} />
+        <ProviderCta provider={provider} />
+        <Footer />
+        <MobileBookBar provider={provider} />
+      </ProviderMusic>
     </main>
   );
 }

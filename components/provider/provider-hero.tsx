@@ -13,6 +13,7 @@ import {
 } from "motion/react";
 import type { Provider } from "@/lib/providers";
 import { Emblem } from "@/components/provider/emblem";
+import { useMusicLevel } from "@/components/provider/music-player";
 import { cn } from "@/lib/utils";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
@@ -72,7 +73,7 @@ function HeroWord({
               animate={{ y: "0%" }}
               transition={{ duration: 1.1, delay: 0.35 + i * 0.06, ease: EASE }}
             >
-              {char}
+              {char === " " ? " " : char}
             </motion.span>
           ))}
         </span>
@@ -97,6 +98,12 @@ export function ProviderHero({ provider }: { provider: Provider }) {
   const word = useLayer(mouseX, mouseY, scrollYProgress, 38, -40);
   const subject = useLayer(mouseX, mouseY, scrollYProgress, 60, -110);
   const fade = useTransform(scrollYProgress, [0, 0.85], [1, 0]);
+
+  const silence = useMotionValue(0);
+  const level = useMusicLevel() ?? silence;
+  const glowScale = useTransform(level, [0, 1], [1, 1.45]);
+  const glowBoost = useTransform(level, [0, 1], [0.6, 1]);
+  const logoPulse = useTransform(level, [0, 1], [1, 1.05]);
 
   function handleMouseMove(e: React.MouseEvent<HTMLElement>) {
     if (reduce) return;
@@ -144,11 +151,15 @@ export function ProviderHero({ provider }: { provider: Provider }) {
 
         <motion.div
           aria-hidden
-          style={{ x: "-50%", y: "-50%" }}
-          animate={{ opacity: [0.35, 0.7, 0.35], scale: [1, 1.08, 1] }}
-          transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-          className="absolute left-1/2 top-[38%] h-[60vmin] w-[60vmin] rounded-full bg-volt/25 blur-[120px]"
-        />
+          style={{ x: "-50%", y: "-50%", scale: glowScale, opacity: glowBoost }}
+          className="absolute left-1/2 top-[38%] h-[60vmin] w-[60vmin]"
+        >
+          <motion.div
+            animate={{ opacity: [0.35, 0.7, 0.35], scale: [1, 1.08, 1] }}
+            transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+            className="h-full w-full rounded-full bg-volt/25 blur-[120px]"
+          />
+        </motion.div>
         <motion.div
           aria-hidden
           animate={{ opacity: [0.2, 0.45, 0.2] }}
@@ -182,7 +193,21 @@ export function ProviderHero({ provider }: { provider: Provider }) {
                 animate={reduce ? undefined : { y: [0, -14, 0] }}
                 transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}
               >
-                <Emblem variant={provider.emblem} className="h-[min(78svh,96vw)] w-[min(78svh,96vw)] opacity-90" />
+                <motion.div style={{ scale: logoPulse }}>
+                  {provider.logo ? (
+                    <Image
+                      src={provider.logo.src}
+                      alt={provider.logo.alt}
+                      width={provider.logo.width}
+                      height={provider.logo.height}
+                      priority
+                      sizes="(max-width: 768px) 80vw, 640px"
+                      className="h-[min(64svh,86vw)] w-auto [filter:drop-shadow(0_0_40px_rgba(226,232,0,0.22))_drop-shadow(0_20px_40px_rgba(0,0,0,0.6))]"
+                    />
+                  ) : (
+                    <Emblem variant={provider.emblem} className="h-[min(78svh,96vw)] w-[min(78svh,96vw)] opacity-90" />
+                  )}
+                </motion.div>
               </motion.div>
             </motion.div>
           </motion.div>
@@ -212,16 +237,19 @@ export function ProviderHero({ provider }: { provider: Provider }) {
             aria-hidden
             className="absolute inset-x-[20%] bottom-[15%] top-[25%] rounded-full bg-volt/10 blur-[100px]"
           />
-          <Image
-            src={s.src}
-            alt={s.alt}
-            width={s.width}
-            height={s.height}
-            priority
-            sizes="(max-width: 768px) 150vw, 100vw"
-            className="relative w-auto max-w-none object-contain object-bottom drop-shadow-[0_30px_60px_rgba(0,0,0,0.65)] [mask-image:linear-gradient(to_bottom,black_82%,transparent_100%)]"
-            style={{ height: subjectHeight }}
-          />
+          {/* Shadow lives on the wrapper: on the masked <img> itself it would be clipped to a visible box. */}
+          <div className="relative [filter:drop-shadow(0_30px_60px_rgba(0,0,0,0.65))]">
+            <Image
+              src={s.src}
+              alt={s.alt}
+              width={s.width}
+              height={s.height}
+              priority
+              sizes="(max-width: 768px) 150vw, 100vw"
+              className="w-auto max-w-none object-contain object-bottom [mask-image:linear-gradient(to_bottom,black_82%,transparent_100%)]"
+              style={{ height: subjectHeight }}
+            />
+          </div>
         </motion.div>
       </motion.div>
 

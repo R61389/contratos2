@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { motion, type Variants } from "motion/react";
 import { Award, BadgeCheck, CalendarSearch, MapPin, PartyPopper, Star, Zap, ArrowRight } from "lucide-react";
 import type { Provider } from "@/lib/providers";
@@ -38,8 +39,12 @@ export function ProviderInfo({ provider }: { provider: Provider }) {
         <div className="flex flex-col gap-10 lg:flex-row lg:items-end lg:justify-between">
           <div className="max-w-2xl">
             <motion.div variants={item} className="flex flex-wrap items-center gap-3">
-              <span className="glass flex h-14 w-14 items-center justify-center rounded-full">
-                <Emblem variant={provider.emblem} animated={false} className="h-11 w-11" />
+              <span className="glass relative flex h-14 w-14 items-center justify-center overflow-hidden rounded-full">
+                {provider.logo ? (
+                  <Image src={provider.logo.src} alt="" width={provider.logo.width} height={provider.logo.height} sizes="56px" className="h-10 w-auto" />
+                ) : (
+                  <Emblem variant={provider.emblem} animated={false} className="h-11 w-11" />
+                )}
               </span>
               <span className="inline-flex items-center gap-1.5 rounded-full border border-volt/30 bg-volt/10 px-3 py-1 text-xs font-semibold text-volt">
                 <BadgeCheck className="h-3.5 w-3.5" />

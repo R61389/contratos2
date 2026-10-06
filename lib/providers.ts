@@ -30,9 +30,16 @@ export interface VideoItem {
 export interface TeamMember {
   name: string;
   role: string;
-  years: number;
+  years?: number;
   photo: string;
   cutout?: boolean;
+}
+
+export interface Track {
+  title: string;
+  src: string;
+  /** Defaults to the provider's name; set it when the recording is by someone else. */
+  artist?: string;
 }
 
 export interface Review {
@@ -56,7 +63,7 @@ export interface Provider {
   slug: string;
   name: string;
   fullName: string;
-  category: "Grupo Musical" | "DJ" | "Catering" | "Bebidas";
+  category: "Artista" | "Grupo Musical" | "DJ" | "Catering" | "Bebidas";
   kicker: string;
   heroWord: string;
   tagline: string;
@@ -70,6 +77,10 @@ export interface Provider {
   location: string;
   heroImage: string;
   emblem: EmblemVariant;
+  /** Official artwork; when present it replaces the generated emblem. */
+  logo?: { src: string; width: number; height: number; alt: string };
+  /** Played while the visitor is on the profile. */
+  music?: { cover: string; tracks: Track[] };
   subject: {
     src: string;
     width: number;
@@ -252,6 +263,74 @@ const BEER_REVIEWS: Review[] = [
 
 export const PROVIDERS: Provider[] = [
   {
+    slug: "luis-vega",
+    name: "Luis Vega",
+    fullName: "Luis Vega",
+    category: "Artista",
+    kicker: "Regional Mexicano",
+    heroWord: "LUIS VEGA",
+    tagline: "Regional mexicano en vivo: corridos, románticas y los éxitos que todos cantan.",
+    bio: "Un show de regional mexicano con banda completa, pensado para que tus invitados canten de principio a fin. Repertorio a la medida de tu celebración, producción profesional y la presencia de un artista que llena el escenario.",
+    tags: ["Regional mexicano", "Corridos", "Banda en vivo", "Bodas", "Quinceañeros", "Fiestas privadas"],
+    rating: 4.9,
+    reviewsCount: 152,
+    eventsCount: 180,
+    yearsActive: 10,
+    responseTime: "menos de 2 h",
+    location: "Cochabamba, Bolivia",
+    heroImage: hero("photo-1459749411175-04bf5292ceea"),
+    emblem: "eclipse",
+    logo: {
+      src: "/proveedores/luis-vega/logo.webp",
+      width: 512,
+      height: 547,
+      alt: "Logo de Luis Vega — Puro Papel & Lápiz",
+    },
+    music: {
+      cover: "/proveedores/luis-vega/cover.webp",
+      // Royalty-free demo tracks (Mixkit Free Music License). Replace with Luis Vega's licensed recordings.
+      tracks: [
+        { title: "Spanish Heart", artist: "Demo · Michael Ramir C. (Mixkit)", src: "/proveedores/luis-vega/musica/demo-spanish-heart.mp3" },
+        { title: "Under the Sun", artist: "Demo · Michael Ramir C. (Mixkit)", src: "/proveedores/luis-vega/musica/demo-under-the-sun.mp3" },
+      ],
+    },
+    subject: {
+      src: "/proveedores/luis-vega/subject.webp",
+      width: 497,
+      height: 1600,
+      alt: "Luis Vega con sombrero vaquero y traje verde",
+      heightPct: 90,
+      anchor: "center",
+    },
+    price: {
+      from: 12000,
+      includes: ["Show de 2 horas", "Banda completa", "Sonido profesional", "Repertorio a elección"],
+      monthlyBookings: 9,
+    },
+    promo: {
+      discount: 15,
+      title: "Oferta del mes",
+      description: "Eventos realizados entre lunes y jueves.",
+      validUntil: "31 de octubre",
+    },
+    gallery: MUSIC_GALLERY,
+    videos: MUSIC_VIDEOS,
+    teamTitle: "Luis Vega y su banda",
+    team: [
+      { name: "Luis Vega", role: "Voz principal", photo: "/proveedores/luis-vega/integrante.webp", cutout: true },
+      { name: "Requinto", role: "Banda en vivo", photo: portrait("photo-1510915361894-db8b60106cb1") },
+      { name: "Trompetas", role: "Banda en vivo", photo: portrait("photo-1511192336575-5a79af67a629") },
+      { name: "Batería", role: "Banda en vivo", photo: portrait("photo-1519892300165-cb5542fb47c7") },
+    ],
+    reviews: MUSIC_REVIEWS,
+    packages: [
+      { name: "Paquete Básico", price: 12000, duration: "1 h 30 min", perks: ["Show acústico", "Sonido profesional", "Repertorio a elección"] },
+      { name: "Paquete Premium", price: 18500, duration: "2 horas", recommended: true, perks: ["Show con banda completa", "Sonido e iluminación de concierto", "Canción dedicada en vivo", "Repertorio a elección"] },
+      { name: "Paquete VIP", price: 26000, duration: "2 h 30 min", perks: ["Todo lo del Premium", "Pantalla LED y efectos", "Foto y saludo con los festejados", "Coordinador de show"] },
+    ],
+    whatsapp: WHATSAPP,
+  },
+  {
     slug: "grupo-musical-eclipse",
     name: "Eclipse",
     fullName: "Grupo Musical Eclipse",
@@ -380,7 +459,7 @@ export const PROVIDERS: Provider[] = [
     subject: {
       src: "/proveedores/dj-nightflow/subject.webp",
       width: 1420,
-      height: 1038,
+      height: 1039,
       alt: "DJ NightFlow con audífonos mezclando en vivo",
       heightPct: 70,
       anchor: "center",
