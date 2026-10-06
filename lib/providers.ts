@@ -35,12 +35,12 @@ export interface TeamMember {
   cutout?: boolean;
 }
 
-export interface Track {
+/** Either an audio file the provider owns, or an embeddable video from their official YouTube channel. */
+export type Track = {
   title: string;
-  src: string;
   /** Defaults to the provider's name; set it when the recording is by someone else. */
   artist?: string;
-}
+} & ({ src: string; youtubeId?: never } | { youtubeId: string; src?: never });
 
 export interface Review {
   name: string;
@@ -270,14 +270,14 @@ export const PROVIDERS: Provider[] = [
     kicker: "Regional Mexicano",
     heroWord: "LUIS VEGA",
     tagline: "Regional mexicano en vivo: corridos, románticas y los éxitos que todos cantan.",
-    bio: "Un show de regional mexicano con banda completa, pensado para que tus invitados canten de principio a fin. Repertorio a la medida de tu celebración, producción profesional y la presencia de un artista que llena el escenario.",
+    bio: "Cantautor boliviano de regional mexicano y corridos, elegido Artista Masculino del Año en los Bolivia Music Awards 2023 y 2024. Un show con banda completa, pensado para que tus invitados canten de principio a fin, con repertorio a la medida de tu celebración.",
     tags: ["Regional mexicano", "Corridos", "Banda en vivo", "Bodas", "Quinceañeros", "Fiestas privadas"],
     rating: 4.9,
     reviewsCount: 152,
     eventsCount: 180,
     yearsActive: 10,
     responseTime: "menos de 2 h",
-    location: "Cochabamba, Bolivia",
+    location: "Santa Cruz de la Sierra, Bolivia",
     heroImage: hero("photo-1459749411175-04bf5292ceea"),
     emblem: "eclipse",
     logo: {
@@ -288,10 +288,11 @@ export const PROVIDERS: Provider[] = [
     },
     music: {
       cover: "/proveedores/luis-vega/cover.webp",
-      // Royalty-free demo tracks (Mixkit Free Music License). Replace with Luis Vega's licensed recordings.
+      // Official videos from youtube.com/@luisvega_oficial, played through YouTube's embed player.
       tracks: [
-        { title: "Spanish Heart", artist: "Demo · Michael Ramir C. (Mixkit)", src: "/proveedores/luis-vega/musica/demo-spanish-heart.mp3" },
-        { title: "Under the Sun", artist: "Demo · Michael Ramir C. (Mixkit)", src: "/proveedores/luis-vega/musica/demo-under-the-sun.mp3" },
+        { title: "La Foto", youtubeId: "AA2HFtHbe_A" },
+        { title: "Bailando Conmigo", youtubeId: "Ip0dvXGhaoY" },
+        { title: "Me Va Mejor Con el Alcohol", youtubeId: "wXQlMs6QDxA" },
       ],
     },
     subject: {

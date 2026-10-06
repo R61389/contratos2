@@ -5,6 +5,7 @@ const nextConfig = {
     remotePatterns: [
       { protocol: "https", hostname: "images.unsplash.com" },
       { protocol: "https", hostname: "assets.mixkit.co" },
+      { protocol: "https", hostname: "i.ytimg.com" },
     ],
   },
 };
