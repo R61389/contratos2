@@ -17,15 +17,6 @@ import { cn } from "@/lib/utils";
 
 const TITLE = "VIBRA";
 
-const FLOATING_CARDS = [
-  { icon: "🎵", label: "Grupo Musical", className: "left-[2%] top-[10%] sm:left-[6%]", depth: 18 },
-  { icon: "🎧", label: "DJ", className: "right-[3%] top-[16%] sm:right-[8%]", depth: 28 },
-  { icon: "🍔", label: "Catering", className: "left-[0%] top-[62%] sm:left-[4%]", depth: 14 },
-  { icon: "🍺", label: "Bebidas", className: "right-[1%] top-[58%] sm:right-[5%]", depth: 24 },
-  { icon: "📸", label: "Fotografía", className: "left-[14%] top-[82%] sm:left-[18%]", depth: 10 },
-  { icon: "🎉", label: "Decoración", className: "right-[13%] top-[80%] sm:right-[17%]", depth: 20 },
-];
-
 const titleContainer: Variants = {
   hidden: {},
   show: {
@@ -57,47 +48,6 @@ const wordItem: Variants = {
     transition: { duration: 0.7, ease: [0.16, 1, 0.3, 1] as const },
   },
 };
-
-function FloatingCard({
-  icon,
-  label,
-  className,
-  depth,
-  mouseX,
-  mouseY,
-  delay,
-}: (typeof FLOATING_CARDS)[number] & {
-  mouseX: ReturnType<typeof useSpring>;
-  mouseY: ReturnType<typeof useSpring>;
-  delay: number;
-}) {
-  const px = useTransform(mouseX, [-0.5, 0.5], [depth, -depth]);
-  const py = useTransform(mouseY, [-0.5, 0.5], [depth, -depth]);
-
-  return (
-    <motion.div
-      initial={{ opacity: 0, scale: 0.85 }}
-      animate={{ opacity: 1, scale: 1 }}
-      transition={{ duration: 0.9, delay, ease: [0.16, 1, 0.3, 1] }}
-      style={{ x: px, y: py }}
-      className={cn("pointer-events-none absolute hidden md:block", className)}
-    >
-      <motion.div
-        animate={{ y: [0, -16, 0] }}
-        transition={{
-          duration: 6 + depth * 0.1,
-          repeat: Infinity,
-          ease: "easeInOut",
-          delay: delay * 0.4,
-        }}
-        className="glass flex items-center gap-2.5 rounded-2xl px-4 py-2.5 shadow-card"
-      >
-        <span className="text-xl leading-none">{icon}</span>
-        <span className="text-xs font-medium text-ink-light sm:text-sm">{label}</span>
-      </motion.div>
-    </motion.div>
-  );
-}
 
 export function Hero() {
   const sectionRef = useRef<HTMLElement>(null);
@@ -179,17 +129,6 @@ export function Hero() {
           />
         ))}
       </div>
-
-      {/* decorative floating service cards */}
-      {FLOATING_CARDS.map((card, i) => (
-        <FloatingCard
-          key={card.label}
-          {...card}
-          mouseX={mouseX}
-          mouseY={mouseY}
-          delay={1.9 + i * 0.1}
-        />
-      ))}
 
       <motion.div
         style={{ y: scrollY, opacity: scrollOpacity }}
