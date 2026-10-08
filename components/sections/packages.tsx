@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { motion } from "motion/react";
 import { Check } from "lucide-react";
 import { SectionHeading } from "@/components/ui/section-heading";
@@ -8,6 +9,7 @@ import { cn } from "@/lib/utils";
 
 const PACKAGES = [
   {
+    id: "basico",
     name: "Paquete Básico",
     price: "Desde Bs 3,500",
     desc: "Ideal para reuniones íntimas",
@@ -15,6 +17,7 @@ const PACKAGES = [
     highlight: false,
   },
   {
+    id: "fiesta",
     name: "Paquete Fiesta",
     price: "Desde Bs 7,800",
     desc: "Para celebraciones con energía",
@@ -22,6 +25,7 @@ const PACKAGES = [
     highlight: false,
   },
   {
+    id: "completo",
     name: "Paquete Completo",
     price: "Desde Bs 14,900",
     desc: "La experiencia todo incluido",
@@ -36,6 +40,7 @@ const PACKAGES = [
     highlight: true,
   },
   {
+    id: "premium",
     name: "Paquete Premium",
     price: "Desde Bs 22,500",
     desc: "Para eventos inolvidables",
@@ -96,8 +101,8 @@ export function Packages() {
                 ))}
               </ul>
 
-              <Button variant={pkg.highlight ? "primary" : "secondary"} className="w-full">
-                Elegir paquete
+              <Button variant={pkg.highlight ? "primary" : "secondary"} className="w-full" asChild>
+                <Link href={`/organizar?paquete=${pkg.id}`}>Elegir paquete</Link>
               </Button>
             </motion.div>
           ))}

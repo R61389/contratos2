@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef } from "react";
+import Link from "next/link";
 import { motion, useMotionTemplate, useMotionValue } from "motion/react";
 import {
   Music4,
@@ -15,10 +16,10 @@ import {
 import { cn } from "@/lib/utils";
 
 const SERVICES = [
-  { icon: Music4, title: "Grupos Musicales", desc: "Bandas en vivo para toda ocasión" },
-  { icon: Disc3, title: "DJs", desc: "Sets a medida para tu pista de baile" },
-  { icon: UtensilsCrossed, title: "Catering", desc: "Menús gourmet para cualquier evento" },
-  { icon: Beer, title: "Bebidas", desc: "Cervecerías artesanales y barra libre" },
+  { icon: Music4, title: "Grupos Musicales", desc: "Bandas en vivo para toda ocasión", href: "/proveedores?servicio=musica" },
+  { icon: Disc3, title: "DJs", desc: "Sets a medida para tu pista de baile", href: "/proveedores?servicio=dj" },
+  { icon: UtensilsCrossed, title: "Catering", desc: "Menús gourmet para cualquier evento", href: "/proveedores?servicio=catering" },
+  { icon: Beer, title: "Bebidas", desc: "Cervecerías artesanales y barra libre", href: "/proveedores?servicio=bebidas" },
   { icon: Camera, title: "Fotografía", desc: "Captura cada momento inolvidable" },
   { icon: PartyPopper, title: "Decoración", desc: "Ambientación temática y floral" },
   { icon: Speaker, title: "Sonido", desc: "Equipos profesionales de audio" },
@@ -29,8 +30,9 @@ function ServiceCard({
   icon: Icon,
   title,
   desc,
+  href,
   index,
-}: (typeof SERVICES)[number] & { index: number }) {
+}: { icon: typeof Music4; title: string; desc: string; href?: string; index: number }) {
   const ref = useRef<HTMLDivElement>(null);
   const rx = useMotionValue(0);
   const ry = useMotionValue(0);
@@ -79,9 +81,23 @@ function ServiceCard({
             <Icon className="h-6 w-6" strokeWidth={1.75} />
           </span>
           <div>
-            <h3 className="text-base font-semibold text-white">{title}</h3>
+            <h3 className="text-base font-semibold text-white">
+              {href ? (
+                // The link's hit area covers the whole card.
+                <Link href={href} className="after:absolute after:inset-0 after:content-['']">
+                  {title}
+                </Link>
+              ) : (
+                title
+              )}
+            </h3>
             <p className="mt-1 text-sm text-ink-mid">{desc}</p>
           </div>
+          {!href && (
+            <span className="absolute right-0 top-0 rounded-full border border-ink-light/15 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-ink-mid">
+              Pronto
+            </span>
+          )}
         </div>
       </motion.div>
     </motion.div>

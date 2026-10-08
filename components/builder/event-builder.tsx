@@ -3,11 +3,11 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import { AnimatePresence, motion, useTransform } from "motion/react";
-import { ArrowLeft, ArrowRight, CalendarDays, Check, Users, Wallet } from "lucide-react";
+import { ArrowLeft, ArrowRight, CalendarDays, Check, PartyPopper, Users, Wallet } from "lucide-react";
 import type { Provider } from "@/lib/providers";
 import { formatLongDate } from "@/lib/availability";
 import { formatBs } from "@/lib/format";
-import { EVENT_TYPES, optionsFor, SERVICES } from "@/lib/event-builder";
+import { EVENT_TYPES, optionsFor, PACKAGES, SERVICES, suggestedBudget } from "@/lib/event-builder";
 import { useGlide } from "@/components/catering/event-calculator";
 import { fromDateKey, useDraft, type Draft } from "@/components/builder/use-draft";
 import { StepDetails, StepProviders, StepServices, StepSummary, StepType } from "@/components/builder/steps";
@@ -145,7 +145,41 @@ export function EventBuilder({ providers }: { providers: Provider[] }) {
   const { draft, update, reset, ready } = useDraft();
   const [today, setToday] = useState<Date | null>(null);
   const [direction, setDirection] = useState(1);
+  const [notice, setNotice] = useState<string | null>(null);
   const { total } = useSelection(draft, providers);
+
+  // Links from profiles, the directory and the packages arrive as ?agregar=<slug> or ?paquete=<id>.
+  useEffect(() => {
+    if (!ready) return;
+    const params = new URLSearchParams(window.location.search);
+    const slug = params.get("agregar");
+    const pack = PACKAGES[params.get("paquete") ?? ""];
+    const provider = providers.find((p) => p.slug === slug);
+    const service = provider && SERVICES.find((s) => s.categories.includes(provider.category));
+    if (provider && service) {
+      update((d) => ({
+        services: d.services.includes(service.id) ? d.services : [...d.services, service.id],
+        picks: { ...d.picks, [service.id]: provider.slug },
+      }));
+      setNotice(`${provider.fullName} se agregó a tu evento`);
+    } else if (pack) {
+      update((d) => ({
+        services: pack.services,
+        picks: {},
+        guests: pack.guests,
+        budget: d.budgetTouched ? d.budget : suggestedBudget(pack.guests),
+        step: 0,
+      }));
+      setNotice(`${pack.label}: ya elegimos los servicios, ahora cuéntanos qué celebras`);
+    }
+    if (slug || params.has("paquete")) window.history.replaceState(null, "", window.location.pathname);
+  }, [ready, providers, update]);
+
+  useEffect(() => {
+    if (!notice) return;
+    const id = setTimeout(() => setNotice(null), 5000);
+    return () => clearTimeout(id);
+  }, [notice]);
 
   // "Today" depends on the visitor's clock, so it is read after mount.
   useEffect(() => setToday(startOfDay(new Date())), []);
@@ -162,11 +196,11 @@ export function EventBuilder({ providers }: { providers: Provider[] }) {
   function goTo(step: number) {
     setDirection(step > draft.step ? 1 : -1);
     update((d) => {
-      // Entering the providers step for the first time picks the best option for each service.
-      if (step === 3 && !Object.values(d.picks).some(Boolean)) {
+      // Coming from the services step, each service without a provider gets the best available one.
+      if (step === 3 && d.step === 2) {
         const date = fromDateKey(d.date);
-        const picks: Draft["picks"] = {};
-        for (const s of SERVICES.filter((x) => d.services.includes(x.id))) {
+        const picks: Draft["picks"] = { ...d.picks };
+        for (const s of SERVICES.filter((x) => d.services.includes(x.id) && !d.picks[x.id])) {
           const best = optionsFor(s, providers, d.guests, date).find((o) => o.status !== "booked");
           if (best) picks[s.id] = best.provider.slug;
         }
@@ -232,6 +266,21 @@ export function EventBuilder({ providers }: { providers: Provider[] }) {
             );
           })}
         </ol>
+
+        <AnimatePresence>
+          {notice && (
+            <motion.p
+              role="status"
+              initial={{ opacity: 0, y: -10, scale: 0.97 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: -10 }}
+              className="mx-auto mt-8 flex w-fit max-w-full items-center gap-2.5 rounded-full border border-volt/40 bg-volt/10 px-5 py-2.5 text-sm text-white shadow-glow"
+            >
+              <PartyPopper className="h-4 w-4 shrink-0 text-volt" />
+              {notice}
+            </motion.p>
+          )}
+        </AnimatePresence>
 
         <div className="mt-12 grid gap-8 lg:grid-cols-[1fr_340px] lg:items-start">
           <div className="min-w-0">

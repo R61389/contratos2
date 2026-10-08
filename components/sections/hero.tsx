@@ -247,9 +247,11 @@ export function Hero() {
           transition={{ duration: 0.7, delay: 2 }}
           className="mt-10 flex flex-col gap-4 sm:flex-row"
         >
-          <MagneticButton size="lg" variant="secondary" className="group">
-            <Compass className="h-4 w-4" />
-            Explorar eventos
+          <MagneticButton size="lg" variant="secondary" className="group" asChild>
+            <Link href="/proveedores">
+              <Compass className="h-4 w-4" />
+              Explorar proveedores
+            </Link>
           </MagneticButton>
           <MagneticButton size="lg" variant="primary" className="group" asChild>
             <Link href="/organizar">

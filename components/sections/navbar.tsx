@@ -10,7 +10,7 @@ import { cn } from "@/lib/utils";
 const LINKS = [
   { label: "Inicio", href: "/#inicio" },
   { label: "Servicios", href: "/#servicios" },
-  { label: "Proveedores", href: "/#proveedores" },
+  { label: "Proveedores", href: "/proveedores" },
   { label: "Cómo funciona", href: "/#como-funciona" },
   { label: "Paquetes", href: "/#paquetes" },
   { label: "Contacto", href: "/#contacto" },

@@ -1,7 +1,8 @@
 "use client";
 
+import Link from "next/link";
 import { motion, type Variants } from "motion/react";
-import { ArrowRight, BadgeCheck, CalendarSearch, MapPin, UtensilsCrossed } from "lucide-react";
+import { ArrowRight, BadgeCheck, CalendarSearch, MapPin, Plus, UtensilsCrossed } from "lucide-react";
 import type { Provider } from "@/lib/providers";
 import { MagneticButton } from "@/components/ui/magnetic-button";
 import { Stars } from "@/components/provider/stars";
@@ -99,6 +100,15 @@ export function CateringIntro({ provider }: { provider: Provider }) {
                 Consultar disponibilidad
               </a>
             </MagneticButton>
+          </motion.div>
+          <motion.div variants={item} className="mt-4">
+            <Link
+              href={`/organizar?agregar=${provider.slug}`}
+              className="group inline-flex items-center gap-1.5 text-sm text-ink-light transition-colors hover:text-volt"
+            >
+              <Plus className="h-4 w-4" />
+              Agregar a mi evento con otros proveedores
+            </Link>
           </motion.div>
         </div>
 

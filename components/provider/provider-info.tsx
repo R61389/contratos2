@@ -1,8 +1,9 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { motion, type Variants } from "motion/react";
-import { Award, BadgeCheck, CalendarSearch, MapPin, PartyPopper, Star, Zap, ArrowRight } from "lucide-react";
+import { Award, BadgeCheck, CalendarSearch, MapPin, PartyPopper, Plus, Star, Zap, ArrowRight } from "lucide-react";
 import type { Provider } from "@/lib/providers";
 import { MagneticButton } from "@/components/ui/magnetic-button";
 import { Emblem } from "@/components/provider/emblem";
@@ -83,18 +84,24 @@ export function ProviderInfo({ provider }: { provider: Provider }) {
             </motion.div>
           </div>
 
-          <motion.div variants={item} className="flex flex-col gap-3 sm:flex-row lg:flex-col xl:flex-row">
-            <MagneticButton size="lg" asChild className="group">
+          <motion.div variants={item} className="flex flex-col gap-3 sm:flex-row sm:flex-wrap lg:shrink-0 lg:flex-col">
+            <MagneticButton size="lg" asChild className="group lg:w-full" wrapperClassName="lg:block">
               <a href="#paquetes">
                 Reservar ahora
                 <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
               </a>
             </MagneticButton>
-            <MagneticButton size="lg" variant="secondary" asChild>
+            <MagneticButton size="lg" variant="secondary" asChild className="lg:w-full" wrapperClassName="lg:block">
               <a href="#disponibilidad">
                 <CalendarSearch className="h-4 w-4" />
                 Consultar disponibilidad
               </a>
+            </MagneticButton>
+            <MagneticButton size="lg" variant="outline" asChild className="lg:w-full" wrapperClassName="lg:block">
+              <Link href={`/organizar?agregar=${provider.slug}`}>
+                <Plus className="h-4 w-4" />
+                Agregar a mi evento
+              </Link>
             </MagneticButton>
           </motion.div>
         </div>

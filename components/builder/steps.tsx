@@ -84,13 +84,18 @@ export function StepType({ draft, update }: StepProps) {
               whileTap={{ scale: 0.97 }}
               aria-pressed={active}
               onClick={() =>
-                update((d) => ({
-                  type: t.id,
-                  services: t.services,
-                  guests: d.type ? d.guests : t.guests,
-                  budget: d.budgetTouched ? d.budget : suggestedBudget(d.type ? d.guests : t.guests),
-                  picks: {},
-                }))
+                update((d) => {
+                  // Keep what the visitor already chose: a package's services before any type, and added providers always.
+                  const picked = SERVICES.filter((s) => d.picks[s.id]).map((s) => s.id);
+                  const kept = d.type ? picked : [...d.services, ...picked];
+                  const guests = d.type || d.services.length ? d.guests : t.guests;
+                  return {
+                    type: t.id,
+                    services: SERVICES.map((s) => s.id).filter((id) => t.services.includes(id) || kept.includes(id)),
+                    guests,
+                    budget: d.budgetTouched ? d.budget : suggestedBudget(guests),
+                  };
+                })
               }
               className={cn(
                 "group relative aspect-[4/5] overflow-hidden rounded-3xl text-left ring-1 ring-inset transition-shadow duration-300",

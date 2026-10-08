@@ -40,6 +40,14 @@ export const SERVICES: Service[] = [
   { id: "bebidas", label: "Bebidas", description: "Cerveza artesanal y barra", categories: ["Bebidas"] },
 ];
 
+/** The home page's packages, as a starting point for the builder. */
+export const PACKAGES: Record<string, { label: string; services: ServiceId[]; guests: number }> = {
+  basico: { label: "Paquete Básico", services: ["dj"], guests: 40 },
+  fiesta: { label: "Paquete Fiesta", services: ["dj", "catering"], guests: 50 },
+  completo: { label: "Paquete Completo", services: ["musica", "dj", "catering"], guests: 120 },
+  premium: { label: "Paquete Premium", services: ["musica", "dj", "catering", "bebidas"], guests: 150 },
+};
+
 /** Shown so the visitor knows they exist, but no provider offers them yet. */
 export const UPCOMING_SERVICES = ["Fotografía", "Decoración", "Sonido", "Iluminación"];
 
