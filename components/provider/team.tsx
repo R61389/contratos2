@@ -97,15 +97,23 @@ function MemberCard({ member, index }: { member: TeamMember; index: number }) {
   );
 }
 
-export function Team({ provider }: { provider: Provider }) {
+export function Team({
+  provider,
+  title = "Las personas detrás de la experiencia",
+  description = "Profesionales con años de escenario, listos para darle vida a tu celebración.",
+}: {
+  provider: Provider;
+  title?: React.ReactNode;
+  description?: string;
+}) {
   const cols = provider.team.length >= 4 ? "lg:grid-cols-4" : provider.team.length === 3 ? "lg:grid-cols-3" : "lg:grid-cols-2 lg:max-w-3xl";
   return (
     <section id="integrantes" className="relative scroll-mt-24 py-24 sm:py-32">
       <div className="mx-auto max-w-6xl px-6">
         <SectionHeading
           eyebrow={provider.teamTitle}
-          title="Las personas detrás de la experiencia"
-          description="Profesionales con años de escenario, listos para darle vida a tu celebración."
+          title={title}
+          description={description}
           titleClassName="font-general"
         />
         <div className={cn("mx-auto mt-14 grid gap-5 sm:grid-cols-2", cols)}>

@@ -72,6 +72,41 @@
     display: none;
   }
 
+  .range-volt {
+    -webkit-appearance: none;
+    appearance: none;
+    height: 6px;
+    border-radius: 9999px;
+    cursor: pointer;
+    outline: none;
+  }
+
+  .range-volt::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 28px;
+    height: 28px;
+    border-radius: 9999px;
+    background: #e2e800;
+    border: 6px solid #141414;
+    box-shadow: 0 0 0 1px rgba(226, 232, 0, 0.6), 0 0 24px 4px rgba(226, 232, 0, 0.35);
+    transition: transform 0.2s ease;
+  }
+
+  .range-volt::-moz-range-thumb {
+    width: 28px;
+    height: 28px;
+    border-radius: 9999px;
+    background: #e2e800;
+    border: 6px solid #141414;
+    box-shadow: 0 0 0 1px rgba(226, 232, 0, 0.6), 0 0 24px 4px rgba(226, 232, 0, 0.35);
+  }
+
+  .range-volt:active::-webkit-slider-thumb,
+  .range-volt:focus-visible::-webkit-slider-thumb {
+    transform: scale(1.15);
+  }
+
   .noise {
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
   }

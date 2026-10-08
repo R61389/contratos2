@@ -8,7 +8,6 @@ import type { GalleryItem, GalleryTag, Provider } from "@/lib/providers";
 import { SectionHeading } from "@/components/ui/section-heading";
 import { cn } from "@/lib/utils";
 
-const FILTERS: ("Todos" | GalleryTag)[] = ["Todos", "Fotos", "Escenarios", "Eventos", "Público"];
 
 function Lightbox({
   items,
@@ -135,8 +134,19 @@ function Lightbox({
   );
 }
 
-export function Gallery({ provider }: { provider: Provider }) {
-  const [filter, setFilter] = useState<(typeof FILTERS)[number]>("Todos");
+export function Gallery({
+  provider,
+  eyebrow = "Galería",
+  title = "Cada evento, una historia",
+  description = "Fotos reales de escenarios, celebraciones y del público que vivió la experiencia.",
+}: {
+  provider: Provider;
+  eyebrow?: string;
+  title?: React.ReactNode;
+  description?: string;
+}) {
+  const filters: ("Todos" | GalleryTag)[] = ["Todos", ...new Set(provider.gallery.map((g) => g.tag))];
+  const [filter, setFilter] = useState<"Todos" | GalleryTag>("Todos");
   const [open, setOpen] = useState<number | null>(null);
   const items = filter === "Todos" ? provider.gallery : provider.gallery.filter((g) => g.tag === filter);
 
@@ -146,13 +156,13 @@ export function Gallery({ provider }: { provider: Provider }) {
         <div className="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
           <SectionHeading
             align="left"
-            eyebrow="Galería"
-            title="Cada evento, una historia"
-            description="Fotos reales de escenarios, celebraciones y del público que vivió la experiencia."
+            eyebrow={eyebrow}
+            title={title}
+            description={description}
             titleClassName="font-general"
           />
           <div className="scrollbar-none -mx-6 flex gap-2 overflow-x-auto px-6 lg:mx-0 lg:shrink-0 lg:overflow-visible lg:px-0" role="tablist" aria-label="Filtrar galería">
-            {FILTERS.map((f) => (
+            {filters.map((f) => (
               <button
                 key={f}
                 role="tab"

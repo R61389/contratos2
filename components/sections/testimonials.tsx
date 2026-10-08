@@ -47,7 +47,7 @@ export function Testimonials() {
   }, []);
 
   return (
-    <section className="relative py-28 sm:py-36">
+    <section id="testimonios" className="relative scroll-mt-24 py-28 sm:py-36">
       <div className="mx-auto max-w-4xl px-6">
         <SectionHeading
           eyebrow="Testimonios"

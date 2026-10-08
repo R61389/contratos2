@@ -36,21 +36,26 @@ const LEGEND: { status: DayStatus; label: string }[] = [
   { status: "booked", label: "Ocupado" },
 ];
 
-function startOfDay(d: Date) {
+export function startOfDay(d: Date) {
   return new Date(d.getFullYear(), d.getMonth(), d.getDate());
 }
 
-function Calendar({
+export function Calendar({
   provider,
   today,
   selected,
   onSelect,
+  labels,
+  note,
 }: {
   provider: Provider;
   today: Date;
   selected: Date | null;
   onSelect: (d: Date) => void;
+  labels?: Record<DayStatus, string>;
+  note?: React.ReactNode;
 }) {
+  const legend = labels ? LEGEND.map((l) => ({ ...l, label: labels[l.status] })) : LEGEND;
   const [offset, setOffset] = useState(0);
   const [direction, setDirection] = useState(1);
   const month = new Date(today.getFullYear(), today.getMonth() + offset, 1);
@@ -134,7 +139,7 @@ function Calendar({
                   onClick={() => onSelect(date)}
                   whileTap={disabled ? undefined : { scale: 0.92 }}
                   aria-pressed={isSelected}
-                  aria-label={`${formatLongDate(date)}: ${past ? "fecha pasada" : LEGEND.find((l) => l.status === status)?.label}`}
+                  aria-label={`${formatLongDate(date)}: ${past ? "fecha pasada" : legend.find((l) => l.status === status)?.label}`}
                   className={cn(
                     "relative flex aspect-square flex-col items-center justify-center rounded-xl border text-sm font-medium transition-all duration-200 sm:rounded-2xl sm:text-base",
                     past ? "cursor-not-allowed border-transparent text-ink-mid/30" : STATUS_STYLES[status],
@@ -159,7 +164,7 @@ function Calendar({
       </div>
 
       <div className="mt-6 flex flex-wrap items-center gap-x-5 gap-y-2 border-t border-ink-light/10 pt-5 text-xs text-ink-mid">
-        {LEGEND.map((l) => (
+        {legend.map((l) => (
           <span key={l.status} className="flex items-center gap-2">
             <span className={cn("h-2.5 w-2.5 rounded-full", DOT[l.status])} />
             {l.label}
@@ -167,14 +172,14 @@ function Calendar({
         ))}
         <span className="ml-auto flex items-center gap-2 text-volt">
           <Sparkles className="h-3.5 w-3.5" />
-          Lun a jue −{provider.promo.discount}%
+          {note ?? <>Lun a jue −{provider.promo.discount}%</>}
         </span>
       </div>
     </div>
   );
 }
 
-function CalendarSkeleton() {
+export function CalendarSkeleton() {
   return (
     <div className="glass rounded-3xl p-5 sm:p-7">
       <div className="h-8 w-40 animate-pulse rounded-lg bg-white/5" />
