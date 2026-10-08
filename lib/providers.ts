@@ -8,7 +8,15 @@ export type EmblemVariant =
   | "peaks"
   | "hop";
 
-export type GalleryTag = "Fotos" | "Escenarios" | "Eventos" | "Público";
+export type GalleryTag =
+  | "Fotos"
+  | "Escenarios"
+  | "Eventos"
+  | "Público"
+  | "Buffets"
+  | "Decoración"
+  | "Mesas"
+  | "Chef en acción";
 
 export type GalleryShape = "landscape" | "portrait" | "square" | "tall";
 
@@ -57,6 +65,46 @@ export interface Package {
   duration: string;
   perks: string[];
   recommended?: boolean;
+}
+
+export interface MenuCourses {
+  entradas: string[];
+  principal: string[];
+  postres: string[];
+  bebidas: string[];
+}
+
+export interface CateringMenu {
+  id: string;
+  name: string;
+  tagline: string;
+  image: string;
+  pricePerPerson: number;
+  minGuests: number;
+  serviceTime: string;
+  badge?: string;
+  courses: MenuCourses;
+}
+
+export interface Testimonial extends Review {
+  photo: string;
+  guests: number;
+}
+
+/** Extra content for catering companies; when present the profile uses the gastronomy layout. */
+export interface CateringDetails {
+  heroWords: [string, string];
+  guestsServed: number;
+  satisfaction: number;
+  menus: CateringMenu[];
+  /** One waiter is assigned per this many guests. */
+  guestsPerWaiter: number;
+  /** Size of the service staff, shared across same-day events. */
+  staffPool: number;
+  corporateDiscount: number;
+  weekdayDiscount: number;
+  perks: { title: string; description: string }[];
+  testimonials: Testimonial[];
 }
 
 export interface Provider {
@@ -108,6 +156,7 @@ export interface Provider {
   reviews: Review[];
   packages: Package[];
   whatsapp: string;
+  catering?: CateringDetails;
 }
 
 // Placeholder contact number; replace per provider when onboarding.
@@ -171,16 +220,142 @@ const DJ_GALLERY: GalleryItem[] = [
 ];
 
 const CATERING_GALLERY: GalleryItem[] = [
-  photo("photo-1555939594-58d7cb561ad1", "Fotos", "Brochetas a la parrilla con salsas", "tall"),
+  photo("photo-1555244162-803834f70033", "Buffets", "Buffet con fuentes de acero y guarniciones", "landscape"),
+  photo("photo-1600565193348-f74bd3c7ccdf", "Chef en acción", "Chef flameando en la cocina", "tall"),
+  photo("photo-1511795409834-ef04bbd61622", "Decoración", "Mesa con flores y cristalería", "portrait"),
+  photo("photo-1467003909585-2f8a72700288", "Fotos", "Salmón sellado con vegetales frescos", "square"),
+  photo("photo-1464366400600-7168b8af9bc3", "Mesas", "Salón montado para un banquete", "landscape"),
+  photo("photo-1577106263724-2c8e03bfe9cf", "Chef en acción", "Emplatado con pinzas de precisión", "portrait"),
+  photo("photo-1528605248644-14dd04022da1", "Eventos", "Invitados compartiendo una cena larga", "landscape"),
+  photo("photo-1540914124281-342587941389", "Buffets", "Tabla de tostadas y bocaditos", "square"),
+  photo("photo-1519225421980-715cb0215aed", "Decoración", "Mesa larga decorada para boda", "tall"),
+  photo("photo-1529692236671-f1f6cf9683ba", "Fotos", "Corte de carne a la parrilla", "landscape"),
+  photo("photo-1550966871-3ed3cdb5ed0c", "Mesas", "Mesas vestidas frente al ventanal", "portrait"),
+  photo("photo-1577219491135-ce391730fb2c", "Chef en acción", "Chef concentrado en el pase", "square"),
   photo("photo-1414235077428-338989a2e8c0", "Eventos", "Plato de autor servido en mesa de gala", "landscape"),
-  photo("photo-1504674900247-0877df9cc836", "Fotos", "Platos gourmet vistos desde arriba", "square"),
-  photo("photo-1555244162-803834f70033", "Eventos", "Buffet con fuentes de acero", "landscape"),
-  photo("photo-1540189549336-e6e99c3679fe", "Fotos", "Ensalada fresca con jugo natural", "portrait"),
-  photo("photo-1519225421980-715cb0215aed", "Escenarios", "Mesa larga decorada para boda", "landscape"),
-  photo("photo-1511795409834-ef04bbd61622", "Escenarios", "Mesa con flores y cristalería", "tall"),
-  photo("photo-1544025162-d76694265947", "Fotos", "Costillas glaseadas con guarnición", "square"),
-  photo("photo-1464366400600-7168b8af9bc3", "Eventos", "Salón montado para un banquete", "landscape"),
+  photo("photo-1563805042-7684c019e1cb", "Fotos", "Postre en copa con chocolate", "tall"),
 ];
+
+function dish(id: string) {
+  return unsplash(id, 1400, 1000);
+}
+
+const CATERING_MENUS: CateringMenu[] = [
+  {
+    id: "buffet-ejecutivo",
+    name: "Buffet Ejecutivo",
+    tagline: "Práctico, abundante y servido a tiempo para tu equipo.",
+    image: dish("photo-1555244162-803834f70033"),
+    pricePerPerson: 85,
+    minGuests: 50,
+    serviceTime: "4 horas",
+    courses: {
+      entradas: ["Ensalada César con crutones", "Crema de zapallo con semillas"],
+      principal: ["Pollo al romero con papas doradas", "Lomo saltado al wok", "Arroz pilaf con almendras"],
+      postres: ["Mousse de maracuyá", "Brownie tibio"],
+      bebidas: ["Limonada de hierbabuena", "Jugos naturales del valle", "Café y té"],
+    },
+  },
+  {
+    id: "buffet-premium",
+    name: "Buffet Premium",
+    tagline: "Estaciones de autor y emplatados que se sienten de restaurante.",
+    image: dish("photo-1467003909585-2f8a72700288"),
+    pricePerPerson: 140,
+    minGuests: 80,
+    serviceTime: "6 horas",
+    badge: "Más elegido",
+    courses: {
+      entradas: ["Tiradito de trucha del Titicaca", "Burrata con tomates confitados", "Canapés del chef"],
+      principal: ["Salmón sellado con beurre blanc", "Medallón de lomo en reducción de vino", "Risotto de hongos andinos"],
+      postres: ["Mesa de postres de autor", "Tartaleta de frutos rojos", "Macarons de la casa"],
+      bebidas: ["Cóctel de bienvenida", "Estación de limonadas", "Vino de Tarija (copa de brindis)"],
+    },
+  },
+  {
+    id: "parrillada",
+    name: "Parrillada",
+    tagline: "Fuego, cortes seleccionados y parrilleros en vivo.",
+    image: dish("photo-1555939594-58d7cb561ad1"),
+    pricePerPerson: 120,
+    minGuests: 40,
+    serviceTime: "5 horas",
+    courses: {
+      entradas: ["Chorizo artesanal con chimichurri", "Provoleta a la parrilla", "Ensaladas de estación"],
+      principal: ["Bife de chorizo y picaña", "Costillas de cerdo glaseadas", "Papas rústicas y choclo asado"],
+      postres: ["Panqueques con dulce de leche", "Frutas a la brasa"],
+      bebidas: ["Refrescos y agua saborizada", "Chicha morada", "Cerveza artesanal (opcional)"],
+    },
+  },
+  {
+    id: "menu-tradicional",
+    name: "Menú Tradicional",
+    tagline: "Los sabores de Cochabamba, cocinados como en casa.",
+    image: dish("photo-1594041680534-e8c8cdebd659"),
+    pricePerPerson: 75,
+    minGuests: 50,
+    serviceTime: "4 horas",
+    courses: {
+      entradas: ["Sopa de maní con papas fritas", "Llajua y pan de batán"],
+      principal: ["Pique macho", "Lechón al horno con camote", "Picante de pollo con chuño"],
+      postres: ["Helado de canela", "Buñuelos con miel de caña"],
+      bebidas: ["Mocochinchi", "Somó", "Café de los Yungas"],
+    },
+  },
+  {
+    id: "menu-internacional",
+    name: "Menú Internacional",
+    tagline: "Un recorrido por Italia, Perú y el Mediterráneo en cuatro tiempos.",
+    image: dish("photo-1563379926898-05f4575a45d8"),
+    pricePerPerson: 160,
+    minGuests: 60,
+    serviceTime: "6 horas",
+    badge: "Gourmet",
+    courses: {
+      entradas: ["Ceviche clásico de pescado", "Carpaccio de res con rúcula", "Hummus y pan pita"],
+      principal: ["Linguine a los frutos del mar", "Pollo tikka masala con arroz basmati", "Lomo Wellington"],
+      postres: ["Tiramisú", "Crème brûlée", "Suspiro limeño"],
+      bebidas: ["Sangría sin alcohol", "Agua de Jamaica", "Selección de vinos (opcional)"],
+    },
+  },
+  {
+    id: "coffee-break",
+    name: "Coffee Break",
+    tagline: "Pausas que se recuerdan, para reuniones y lanzamientos.",
+    image: dish("photo-1509042239860-f550ce710b93"),
+    pricePerPerson: 35,
+    minGuests: 20,
+    serviceTime: "2 horas",
+    courses: {
+      entradas: ["Mini sándwiches gourmet", "Empanadas de queso"],
+      principal: ["Salteñas de pollo y carne", "Wraps de vegetales asados"],
+      postres: ["Alfajores de maicena", "Cupcakes y galletas de mantequilla"],
+      bebidas: ["Café de especialidad", "Selección de tés", "Jugos naturales"],
+    },
+  },
+];
+
+function scaleMenus(factor: number): CateringMenu[] {
+  return CATERING_MENUS.map((m) => ({ ...m, pricePerPerson: Math.round((m.pricePerPerson * factor) / 5) * 5 }));
+}
+
+const CATERING_PERKS: CateringDetails["perks"] = [
+  { title: "Degustación sin costo", description: "Para eventos desde 150 invitados." },
+  { title: "Coffee break 2×1", description: "Reuniones de lunes a jueves." },
+  { title: "Torta de cortesía", description: "En bodas con Buffet Premium." },
+];
+
+function testimonials(reviews: Review[]): Testimonial[] {
+  const photos = [
+    "photo-1519225421980-715cb0215aed",
+    "photo-1414235077428-338989a2e8c0",
+    "photo-1528605248644-14dd04022da1",
+    "photo-1464366400600-7168b8af9bc3",
+    "photo-1511795409834-ef04bbd61622",
+  ];
+  const guests = [180, 120, 90, 150, 70];
+  return reviews.map((r, i) => ({ ...r, photo: unsplash(photos[i % photos.length], 1200, 1400), guests: guests[i % guests.length] }));
+}
 
 const BEER_GALLERY: GalleryItem[] = [
   photo("photo-1608270586620-248524c67de9", "Fotos", "Jarra de cerveza dorada sobre fondo negro", "square"),
@@ -330,6 +505,74 @@ export const PROVIDERS: Provider[] = [
       { name: "Paquete VIP", price: 26000, duration: "2 h 30 min", perks: ["Todo lo del Premium", "Pantalla LED y efectos", "Foto y saludo con los festejados", "Coordinador de show"] },
     ],
     whatsapp: WHATSAPP,
+  },
+  {
+    slug: "delicias-catering",
+    name: "Delicias",
+    fullName: "Delicias Eventos y Catering",
+    category: "Catering",
+    kicker: "Eventos y catering",
+    heroWord: "GOURMET",
+    tagline: "Alta cocina para bodas, empresas y celebraciones: del primer bocado al último brindis.",
+    bio: "Doce años llevando la cocina de autor a los salones, jardines y oficinas de Cochabamba. Diseñamos cada menú contigo, cocinamos con producto del valle y llegamos con un equipo de chefs, parrilleros y meseros que cuida cada detalle, desde el montaje hasta la limpieza final.",
+    tags: ["Buffet", "Parrilla", "Cocina de autor", "Coffee break", "Bodas", "Corporativos"],
+    rating: 4.9,
+    reviewsCount: 318,
+    eventsCount: 500,
+    yearsActive: 12,
+    responseTime: "menos de 1 h",
+    location: "Cochabamba, Bolivia",
+    heroImage: hero("photo-1555939594-58d7cb561ad1"),
+    emblem: "cloche",
+    logo: {
+      src: "/proveedores/delicias-catering/logo.webp",
+      width: 1009,
+      height: 756,
+      alt: "Logo de Delicias Eventos y Catering",
+    },
+    subject: {
+      src: "/proveedores/delicias-catering/subject.webp",
+      width: 1295,
+      height: 998,
+      alt: "Chef de Delicias con pizzas artesanales, costillas y panes recién horneados",
+      heightPct: 61,
+      anchor: "center",
+    },
+    price: {
+      from: 35,
+      unit: "por persona",
+      includes: ["Menú a elección", "Vajilla y mantelería", "Personal de servicio", "Montaje y limpieza"],
+      monthlyBookings: 21,
+    },
+    promo: {
+      discount: 15,
+      title: "Eventos corporativos",
+      description: "En cualquier menú para empresas e instituciones.",
+      validUntil: "31 de diciembre",
+    },
+    gallery: CATERING_GALLERY,
+    videos: FOOD_VIDEOS,
+    teamTitle: "La brigada",
+    team: [
+      { name: "Chef ejecutivo", role: "Cocina, horno y parrilla", years: 20, photo: "/proveedores/delicias-catering/chef.webp", cutout: true },
+      { name: "Chef Laura Méndez", role: "Pastelería", years: 9, photo: portrait("photo-1577219491135-ce391730fb2c") },
+      { name: "Chef Pablo Rivas", role: "Parrilla y fuegos", years: 11, photo: portrait("photo-1600565193348-f74bd3c7ccdf") },
+    ],
+    reviews: CATERING_REVIEWS,
+    packages: [],
+    whatsapp: WHATSAPP,
+    catering: {
+      heroWords: ["GOURMET", "CATERING"],
+      guestsServed: 15000,
+      satisfaction: 98,
+      menus: CATERING_MENUS,
+      guestsPerWaiter: 15,
+      staffPool: 28,
+      corporateDiscount: 15,
+      weekdayDiscount: 10,
+      perks: CATERING_PERKS,
+      testimonials: testimonials(CATERING_REVIEWS),
+    },
   },
   {
     slug: "grupo-musical-eclipse",
@@ -598,6 +841,18 @@ export const PROVIDERS: Provider[] = [
       { name: "Paquete VIP", price: 180, unit: "por persona", duration: "Hasta 8 horas", perks: ["Menú degustación de 6 tiempos", "Show cooking en vivo", "Maridaje de vinos", "Maître dedicado"] },
     ],
     whatsapp: WHATSAPP,
+    catering: {
+      heroWords: ["GOURMET", "CATERING"],
+      guestsServed: 12000,
+      satisfaction: 97,
+      menus: scaleMenus(1.1),
+      guestsPerWaiter: 15,
+      staffPool: 22,
+      corporateDiscount: 15,
+      weekdayDiscount: 10,
+      perks: CATERING_PERKS,
+      testimonials: testimonials(CATERING_REVIEWS),
+    },
   },
   {
     slug: "catering-premium",
@@ -652,6 +907,18 @@ export const PROVIDERS: Provider[] = [
       { name: "Paquete VIP", price: 220, unit: "por persona", duration: "Hasta 8 horas", perks: ["Todo lo del Premium", "Barra de cócteles", "Snack de medianoche", "Coordinador de banquete"] },
     ],
     whatsapp: WHATSAPP,
+    catering: {
+      heroWords: ["PREMIUM", "CATERING"],
+      guestsServed: 9500,
+      satisfaction: 97,
+      menus: scaleMenus(1.2),
+      guestsPerWaiter: 15,
+      staffPool: 20,
+      corporateDiscount: 15,
+      weekdayDiscount: 10,
+      perks: CATERING_PERKS,
+      testimonials: testimonials(CATERING_REVIEWS),
+    },
   },
   {
     slug: "cerveceria-andes-craft",

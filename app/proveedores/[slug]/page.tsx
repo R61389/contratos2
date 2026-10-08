@@ -15,6 +15,7 @@ import { Packages } from "@/components/provider/packages";
 import { ProviderCta } from "@/components/provider/provider-cta";
 import { MobileBookBar } from "@/components/provider/mobile-book-bar";
 import { ProviderMusic } from "@/components/provider/music-player";
+import { CateringProfile } from "@/components/catering/catering-profile";
 
 type Params = Promise<{ slug: string }>;
 
@@ -43,6 +44,14 @@ export default async function ProviderPage({ params }: { params: Params }) {
   const { slug } = await params;
   const provider = getProvider(slug);
   if (!provider) notFound();
+
+  if (provider.catering) {
+    return (
+      <main className="relative overflow-x-clip">
+        <CateringProfile provider={{ ...provider, catering: provider.catering }} />
+      </main>
+    );
+  }
 
   return (
     <main className="relative overflow-x-clip">

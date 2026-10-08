@@ -7,7 +7,15 @@ import type { Provider } from "@/lib/providers";
 import { formatBs } from "@/lib/format";
 import { Button } from "@/components/ui/button";
 
-export function MobileBookBar({ provider }: { provider: Provider }) {
+export function MobileBookBar({
+  provider,
+  href = "#disponibilidad",
+  label = "Reservar",
+}: {
+  provider: Provider;
+  href?: string;
+  label?: string;
+}) {
   const { scrollY } = useScroll();
   const [visible, setVisible] = useState(false);
 
@@ -30,7 +38,10 @@ export function MobileBookBar({ provider }: { provider: Provider }) {
             <div className="min-w-0">
               <p className="truncate text-xs text-ink-mid">{provider.fullName}</p>
               <p className="flex items-baseline gap-2">
-                <span className="font-general text-lg font-semibold text-white">{formatBs(provider.price.from)}</span>
+                <span className="font-general text-lg font-semibold text-white">
+                  {provider.price.unit && <span className="mr-1 text-xs font-normal text-ink-mid">desde</span>}
+                  {formatBs(provider.price.from)}
+                </span>
                 <span className="flex items-center gap-1 text-xs text-ink-light">
                   <Star className="h-3 w-3 fill-volt text-volt" />
                   {provider.rating.toFixed(1)}
@@ -38,7 +49,7 @@ export function MobileBookBar({ provider }: { provider: Provider }) {
               </p>
             </div>
             <Button asChild size="sm">
-              <a href="#disponibilidad">Reservar</a>
+              <a href={href}>{label}</a>
             </Button>
           </div>
         </motion.div>
