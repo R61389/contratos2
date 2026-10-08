@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useRef, useState } from "react";
 import {
   motion,
@@ -250,9 +251,11 @@ export function Hero() {
             <Compass className="h-4 w-4" />
             Explorar eventos
           </MagneticButton>
-          <MagneticButton size="lg" variant="primary" className="group">
-            Organizar mi evento
-            <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
+          <MagneticButton size="lg" variant="primary" className="group" asChild>
+            <Link href="/organizar">
+              Organizar mi evento
+              <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
+            </Link>
           </MagneticButton>
         </motion.div>
       </motion.div>

@@ -65,7 +65,9 @@ export function Navbar() {
         </nav>
 
         <div className="hidden lg:block">
-          <Button size="sm">Organizar mi evento</Button>
+          <Button size="sm" asChild>
+            <Link href="/organizar">Organizar mi evento</Link>
+          </Button>
         </div>
 
         <button
@@ -97,8 +99,10 @@ export function Navbar() {
                 {link.label}
               </Link>
             ))}
-            <Button size="sm" className="mt-2 w-full">
-              Organizar mi evento
+            <Button size="sm" className="mt-2 w-full" asChild>
+              <Link href="/organizar" onClick={() => setOpen(false)}>
+                Organizar mi evento
+              </Link>
             </Button>
           </motion.div>
         )}
