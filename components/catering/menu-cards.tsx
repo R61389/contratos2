@@ -41,7 +41,7 @@ function MenuCard({ menu, index, onSelect }: { menu: CateringMenu; index: number
         alt=""
         fill
         sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-        className="object-cover transition-transform duration-[1.2s] ease-out group-hover:scale-[1.08]"
+        className="object-cover transition-transform [transition-duration:1200ms] ease-out group-hover:scale-[1.08]"
       />
       <span className="absolute inset-0 bg-gradient-to-t from-ink via-ink/45 to-ink/10" />
       <motion.span style={{ background: spotlight }} className="absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
