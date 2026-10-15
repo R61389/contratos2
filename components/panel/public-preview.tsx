@@ -1,10 +1,11 @@
 "use client";
 
-import { AtSign, MapPin, Star } from "lucide-react";
+import { AtSign, MapPin, Music, Star } from "lucide-react";
 import type { ProviderKind, ProviderWorkspace } from "@/lib/panel/types";
 import { Thumb } from "@/components/panel/ui/misc";
 import { KIND_LABEL, priceLabel, PRICING_SUFFIX, formatBs } from "@/lib/panel/format";
 import { applyPercent, isPromoLive, promoPrice } from "@/lib/panel/logic";
+import { youtubeThumb } from "@/lib/panel/youtube";
 import { cn } from "@/lib/utils";
 
 type Theme = "cinematic" | "gastronomic" | "nocturnal";
@@ -102,6 +103,21 @@ export function PublicPreview({ ws, narrow = false }: { ws: ProviderWorkspace; n
         )}
 
         {p.description && <p className="text-sm leading-relaxed text-ink-light">{p.description}</p>}
+
+        {ws.music.length > 0 && (
+          <div className="flex items-center gap-3 rounded-2xl border border-white/[0.08] bg-white/[0.03] p-3">
+            <Thumb src={youtubeThumb(ws.music[0].youtubeId)} alt="" className="h-12 w-12 shrink-0 rounded-xl" />
+            <div className="min-w-0 flex-1">
+              <p className="flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-[0.16em] text-volt">
+                <Music className="h-3 w-3" /> Suena en tu perfil
+              </p>
+              <p className="truncate text-sm text-white">{ws.music[0].title}</p>
+              <p className="text-xs text-ink-mid">
+                {ws.music.length} {ws.music.length === 1 ? "canción" : "canciones"} en la lista
+              </p>
+            </div>
+          </div>
+        )}
 
         <div>
           <p className={cn("text-white", theme === "gastronomic" ? "font-serif text-2xl italic" : "font-general text-lg font-semibold")}>Servicios</p>

@@ -130,6 +130,13 @@ export interface Availability {
   updatedAt: string;
 }
 
+/** A song played on the public profile through YouTube's embed player. */
+export interface MusicTrack {
+  id: string;
+  title: string;
+  youtubeId: string;
+}
+
 export interface Promotion {
   id: string;
   name: string;
@@ -206,6 +213,8 @@ export interface ProviderWorkspace {
   media: MediaItem[];
   /** Media ids in display order; the first one is the main photo. */
   galleryOrder: string[];
+  /** Songs for the profile's player; the first one plays first. */
+  music: MusicTrack[];
   coverMediaId: string | null;
   availability: Availability;
   requests: BookingRequest[];

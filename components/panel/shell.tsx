@@ -19,6 +19,7 @@ import {
   LayoutDashboard,
   LogOut,
   Menu as MenuIcon,
+  Music,
   Settings,
   Sparkles,
   Store,
@@ -31,14 +32,16 @@ import { usePanel } from "@/components/panel/store";
 import { Modal, PanelButton } from "@/components/panel/ui/modal";
 import { Thumb } from "@/components/panel/ui/misc";
 import { KIND_LABEL, relativeTime } from "@/lib/panel/format";
+import type { ProviderKind } from "@/lib/panel/types";
 import { cn } from "@/lib/utils";
 
-export const NAV = [
+export const NAV: { href: string; label: string; icon: typeof Music; kinds?: ProviderKind[] }[] = [
   { href: "/panel", label: "Resumen", icon: LayoutDashboard },
   { href: "/panel/solicitudes", label: "Solicitudes de reserva", icon: ClipboardList },
   { href: "/panel/servicios", label: "Mis servicios", icon: Store },
   { href: "/panel/precios", label: "Precios y paquetes", icon: Tags },
   { href: "/panel/galeria", label: "Galería multimedia", icon: Images },
+  { href: "/panel/musica", label: "Música", icon: Music, kinds: ["musica", "dj"] },
   { href: "/panel/calendario", label: "Calendario y disponibilidad", icon: CalendarDays },
   { href: "/panel/promociones", label: "Promociones y descuentos", icon: TicketPercent },
   { href: "/panel/perfil", label: "Perfil público", icon: UserRound },
@@ -124,7 +127,7 @@ function SidebarBody({ onNavigate }: { onNavigate?: () => void }) {
 
       <nav aria-label="Secciones del panel" className="mt-8 flex-1 overflow-y-auto px-3">
         <ul className="flex flex-col gap-0.5">
-          {NAV.map(({ href, label, icon: Icon }) => {
+          {NAV.filter((n) => !n.kinds || n.kinds.includes(ws.kind)).map(({ href, label, icon: Icon }) => {
             const active = href === "/panel" ? pathname === "/panel" : pathname.startsWith(href);
             return (
               <li key={href}>

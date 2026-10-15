@@ -175,6 +175,7 @@ function eclipse(base: Date): ProviderWorkspace {
     ],
     media,
     galleryOrder: media.map((m) => m.id),
+    music: [],
     coverMediaId: media[2]?.id ?? null,
     availability: { restDays: [1], hours: { start: "18:00", end: "02:00" }, overrides: { [daysFrom(base, 12)]: "bloqueada" }, updatedAt: hoursAgo(base, 30) },
     requests: requests(base, services, [
@@ -259,6 +260,7 @@ function cateringGourmet(base: Date): ProviderWorkspace {
     ],
     media,
     galleryOrder: media.map((m) => m.id),
+    music: [],
     coverMediaId: media[3]?.id ?? null,
     availability: { restDays: [], hours: { start: "08:00", end: "23:59" }, overrides: {}, updatedAt: hoursAgo(base, 400) },
     requests: requests(base, services, [
@@ -331,6 +333,7 @@ function nightflow(base: Date): ProviderWorkspace {
     ],
     media,
     galleryOrder: media.map((m) => m.id),
+    music: [],
     coverMediaId: media[0]?.id ?? null,
     availability: { restDays: [0], hours: { start: "20:00", end: "04:00" }, overrides: {}, updatedAt: hoursAgo(base, 10) },
     requests: requests(base, services, [
@@ -386,6 +389,7 @@ function andesCraft(base: Date): ProviderWorkspace {
     tiers: [],
     media,
     galleryOrder: media.map((m) => m.id),
+    music: [],
     coverMediaId: media[1]?.id ?? null,
     availability: { restDays: [1, 2], hours: { start: "12:00", end: "23:00" }, overrides: {}, updatedAt: hoursAgo(base, 900) },
     requests: requests(base, services, [

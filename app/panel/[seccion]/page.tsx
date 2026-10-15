@@ -4,6 +4,7 @@ import { Requests } from "@/components/panel/sections/requests";
 import { Services } from "@/components/panel/sections/services";
 import { Pricing } from "@/components/panel/sections/pricing";
 import { Gallery } from "@/components/panel/sections/gallery";
+import { MusicSection } from "@/components/panel/sections/music";
 import { CalendarSection } from "@/components/panel/sections/calendar";
 import { Promotions } from "@/components/panel/sections/promotions";
 import { ProfileEditor } from "@/components/panel/sections/profile-editor";
@@ -15,6 +16,7 @@ const SECTIONS = {
   servicios: Services,
   precios: Pricing,
   galeria: Gallery,
+  musica: MusicSection,
   calendario: CalendarSection,
   promociones: Promotions,
   perfil: ProfileEditor,
