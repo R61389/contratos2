@@ -36,7 +36,7 @@ function ProgressRing({ value }: { value: number }) {
 }
 
 export function Overview() {
-  const { ws } = usePanel();
+  const { ws, mode } = usePanel();
   const today = dateKey(new Date());
   const pending = ws.requests.filter((r) => r.status === "pendiente");
   const upcoming = ws.requests
@@ -63,8 +63,8 @@ export function Overview() {
         <KpiCard index={0} icon={Inbox} label="Solicitudes pendientes" value={pending.length} accent={pending.length > 0} hint={pending.length ? "Responde rápido para no perderlas" : "Estás al día"} />
         <KpiCard index={1} icon={CalendarCheck} label="Reservas confirmadas" value={confirmed.length} hint="Próximos eventos" />
         <KpiCard index={2} icon={Wallet} label="Ingresos estimados" value={income} format={(v) => formatBs(v)} hint="De reservas confirmadas" />
-        <KpiCard index={3} icon={Eye} label="Visitas al perfil" value={lastMonth?.visits ?? 0} hint={`En ${lastMonth?.month ?? "el último mes"} · demo`} />
-        <KpiCard index={4} icon={Star} label="Calificación promedio" value={ws.rating} format={(v) => v.toFixed(1)} hint={`${ws.reviewsCount} reseñas · demo`} />
+        <KpiCard index={3} icon={Eye} label="Visitas al perfil" value={lastMonth?.visits ?? 0} hint={lastMonth ? `En ${lastMonth.month}${mode === "demo" ? " · demo" : ""}` : "Medición próximamente"} />
+        <KpiCard index={4} icon={Star} label="Calificación promedio" value={ws.rating} format={(v) => v.toFixed(1)} hint={`${ws.reviewsCount} reseñas${mode === "demo" ? " · demo" : ""}`} />
       </div>
 
       <div className="grid gap-6 xl:grid-cols-[1fr_1.2fr]">

@@ -23,6 +23,8 @@ export interface MediaItem {
   alt: string;
   /** "local" items are object URLs created in this browser tab and must be revoked when dropped. */
   source: "demo" | "local";
+  /** Path inside the storage bucket, for photos uploaded to Supabase. */
+  storagePath?: string;
   fileName?: string;
   size?: number;
 }

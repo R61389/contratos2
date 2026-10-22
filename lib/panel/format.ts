@@ -91,6 +91,12 @@ export function relativeTime(iso: string, now = new Date()) {
   return d === 1 ? "ayer" : `hace ${d} días`;
 }
 
-export function uid(prefix: string) {
-  return `${prefix}_${Math.random().toString(36).slice(2, 9)}`;
+/** UUID v4, the id format the database uses. Call sites still pass a prefix naming what they create; it is ignored. */
+export function uid(...[]: [prefix?: string]) {
+  if (typeof crypto !== "undefined" && "randomUUID" in crypto) return crypto.randomUUID();
+  const b = Array.from({ length: 16 }, () => Math.floor(Math.random() * 256));
+  b[6] = (b[6] & 0x0f) | 0x40;
+  b[8] = (b[8] & 0x3f) | 0x80;
+  const h = b.map((x) => x.toString(16).padStart(2, "0")).join("");
+  return `${h.slice(0, 8)}-${h.slice(8, 12)}-${h.slice(12, 16)}-${h.slice(16, 20)}-${h.slice(20)}`;
 }

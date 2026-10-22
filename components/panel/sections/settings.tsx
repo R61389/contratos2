@@ -10,7 +10,7 @@ import { Field, Switch, TextInput } from "@/components/panel/ui/fields";
 import type { PanelSettings } from "@/lib/panel/types";
 
 export function SettingsSection() {
-  const { ws, run, resetActive } = usePanel();
+  const { ws, run, resetActive, mode } = usePanel();
   const toast = useToast();
   const [email, setEmail] = useState(ws.settings.email);
   const [submitted, setSubmitted] = useState(false);
@@ -61,7 +61,7 @@ export function SettingsSection() {
             label="Rechazar solicitudes en fechas bloqueadas"
             description="Responde con amabilidad cuando piden un día que bloqueaste."
           />
-          <DemoNote>Las preferencias se guardan en la demo, pero todavía no se envía ningún aviso real.</DemoNote>
+          <DemoNote>{mode === "demo" ? "Las preferencias se guardan en la demo, pero todavía no se envía ningún aviso real." : "Tus preferencias quedan guardadas; los avisos por correo y WhatsApp llegarán en una próxima versión."}</DemoNote>
         </Card>
       </div>
 
@@ -69,14 +69,22 @@ export function SettingsSection() {
         <div className="flex items-start gap-3">
           <ShieldAlert className="mt-0.5 h-5 w-5 shrink-0 text-red-300" />
           <div className="flex-1">
-            <h2 className="font-general text-base font-semibold text-white">Herramientas de la demostración</h2>
+            <h2 className="font-general text-base font-semibold text-white">{mode === "demo" ? "Herramientas de la demostración" : "Visibilidad del perfil"}</h2>
             <p className="mt-1 text-sm text-ink-mid">
-              Vuelve a los datos iniciales de <span className="text-white">{ws.profile.businessName}</span>. Los otros proveedores de la demo no se modifican.
+              {mode === "demo" ? (
+                <>
+                  Vuelve a los datos iniciales de <span className="text-white">{ws.profile.businessName}</span>. Los otros proveedores de la demo no se modifican.
+                </>
+              ) : (
+                "Un perfil despublicado deja de aparecer en el directorio y su página pública deja de mostrarse."
+              )}
             </p>
             <div className="mt-4 flex flex-wrap gap-2">
-              <PanelButton variant="danger" onClick={() => setResetting(true)}>
-                <RotateCcw className="h-4 w-4" /> Restablecer datos de este proveedor
-              </PanelButton>
+              {mode === "demo" && (
+                <PanelButton variant="danger" onClick={() => setResetting(true)}>
+                  <RotateCcw className="h-4 w-4" /> Restablecer datos de este proveedor
+                </PanelButton>
+              )}
               <PanelButton
                 onClick={() => {
                   const next = !ws.profile.published;

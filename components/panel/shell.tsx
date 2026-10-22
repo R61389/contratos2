@@ -11,12 +11,15 @@ import {
   BarChart3,
   Bell,
   CalendarDays,
+  Check,
   ChevronsUpDown,
+  CloudOff,
   ClipboardList,
   ExternalLink,
   FlaskConical,
   Images,
   LayoutDashboard,
+  Loader2,
   LogOut,
   Menu as MenuIcon,
   Music,
@@ -68,22 +71,33 @@ export function Avatar({ name, url, size = 36 }: { name: string; url: string | n
 }
 
 function ProviderSwitcher() {
-  const { providers, activeId, switchProvider } = usePanel();
+  const { providers, activeId, switchProvider, mode } = usePanel();
   const router = useRouter();
   const active = providers.find((p) => p.id === activeId)!;
+  const label = mode === "demo" ? "Proveedor demo" : "Tu negocio";
+  if (providers.length === 1)
+    return (
+      <div className="flex w-full items-center gap-3 rounded-2xl border border-white/[0.08] bg-white/[0.03] p-2.5">
+        <Avatar name={active.name} url={active.logoUrl} />
+        <span className="min-w-0 flex-1">
+          <span className="block text-[10px] font-semibold uppercase tracking-[0.16em] text-volt">{label}</span>
+          <span className="block truncate text-sm text-white">{active.name}</span>
+        </span>
+      </div>
+    );
   return (
     <Menu.Root>
       <Menu.Trigger className="flex w-full items-center gap-3 rounded-2xl border border-white/[0.08] bg-white/[0.03] p-2.5 text-left transition-colors hover:border-white/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-volt">
         <Avatar name={active.name} url={active.logoUrl} />
         <span className="min-w-0 flex-1">
-          <span className="block text-[10px] font-semibold uppercase tracking-[0.16em] text-volt">Proveedor demo</span>
+          <span className="block text-[10px] font-semibold uppercase tracking-[0.16em] text-volt">{label}</span>
           <span className="block truncate text-sm text-white">{active.name}</span>
         </span>
         <ChevronsUpDown className="h-4 w-4 shrink-0 text-ink-mid" />
       </Menu.Trigger>
       <Menu.Portal>
         <Menu.Content side="top" align="start" sideOffset={8} className="z-[95] w-[260px] rounded-2xl border border-white/10 bg-[#1c1c1c] p-1.5 shadow-2xl">
-          <Menu.Label className="px-3 py-2 text-[11px] text-ink-mid">Cambia de proveedor para ver sus propios datos</Menu.Label>
+          <Menu.Label className="px-3 py-2 text-[11px] text-ink-mid">{mode === "demo" ? "Cambia de proveedor para ver sus propios datos" : "Elige qué negocio administrar"}</Menu.Label>
           {providers.map((p) => (
             <Menu.Item
               key={p.id}
@@ -109,8 +123,9 @@ function ProviderSwitcher() {
 
 function SidebarBody({ onNavigate }: { onNavigate?: () => void }) {
   const pathname = usePathname();
-  const { ws } = usePanel();
+  const { ws, mode, signOut } = usePanel();
   const [logoutOpen, setLogoutOpen] = useState(false);
+  const [leaving, setLeaving] = useState(false);
   const pending = ws.requests.filter((r) => r.status === "pendiente").length;
 
   return (
@@ -180,22 +195,35 @@ function SidebarBody({ onNavigate }: { onNavigate?: () => void }) {
         open={logoutOpen}
         onOpenChange={setLogoutOpen}
         title="Cerrar sesión"
-        description="Esta demostración todavía no tiene cuentas ni inicio de sesión."
+        description={mode === "demo" ? "Esta demostración no tiene cuentas ni inicio de sesión." : "Tus cambios ya están guardados."}
         size="sm"
         footer={
           <>
             <PanelButton variant="ghost" onClick={() => setLogoutOpen(false)}>
               Seguir en el panel
             </PanelButton>
-            <Link href="/" className="inline-flex h-11 items-center justify-center rounded-full bg-volt px-5 text-sm font-medium text-ink hover:brightness-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-volt">
-              Salir al sitio
-            </Link>
+            {mode === "demo" ? (
+              <Link href="/" className="inline-flex h-11 items-center justify-center rounded-full bg-volt px-5 text-sm font-medium text-ink hover:brightness-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-volt">
+                Salir al sitio
+              </Link>
+            ) : (
+              <PanelButton
+                disabled={leaving}
+                onClick={async () => {
+                  setLeaving(true);
+                  await signOut();
+                }}
+              >
+                {leaving ? "Cerrando…" : "Cerrar sesión"}
+              </PanelButton>
+            )}
           </>
         }
       >
         <p className="text-sm text-ink-light">
-          Cuando se conecte el backend, aquí terminará tu sesión de forma segura. Por ahora puedes salir al sitio público; los
-          cambios de esta demo se perderán al recargar la página.
+          {mode === "demo"
+            ? "Puedes salir al sitio público; los cambios de esta demo se perderán al recargar la página."
+            : "Para volver a administrar tu negocio tendrás que entrar de nuevo con tu correo y contraseña."}
         </p>
       </Modal>
     </div>
@@ -260,6 +288,22 @@ function Notifications() {
   );
 }
 
+function SaveIndicator() {
+  const { saveState } = usePanel();
+  if (saveState === "idle") return null;
+  const view = {
+    saving: { icon: <Loader2 className="h-3.5 w-3.5 animate-spin" />, text: "Guardando…", tone: "text-ink-mid" },
+    saved: { icon: <Check className="h-3.5 w-3.5" />, text: "Guardado", tone: "text-emerald-300" },
+    error: { icon: <CloudOff className="h-3.5 w-3.5" />, text: "Sin guardar", tone: "text-red-300" },
+  }[saveState];
+  return (
+    <span role="status" aria-live="polite" className={cn("hidden items-center gap-1.5 text-xs sm:inline-flex", view.tone)}>
+      {view.icon}
+      {view.text}
+    </span>
+  );
+}
+
 function greeting() {
   const h = new Date().getHours();
   return h < 12 ? "Buenos días" : h < 19 ? "Buenas tardes" : "Buenas noches";
@@ -287,6 +331,7 @@ function Header({ onOpenMenu }: { onOpenMenu: () => void }) {
             <span className={ws.profile.published ? "text-emerald-300" : "text-ink-mid"}>{ws.profile.published ? "Perfil publicado" : "Perfil sin publicar"}</span>
           </Link>
         </div>
+        <SaveIndicator />
         <a
           href={`/proveedores/${ws.publicSlug}`}
           target="_blank"
@@ -308,7 +353,7 @@ function Header({ onOpenMenu }: { onOpenMenu: () => void }) {
 export function PanelShell({ children }: { children: React.ReactNode }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const pathname = usePathname();
-  const { activeId } = usePanel();
+  const { activeId, mode } = usePanel();
 
   return (
     <div className="flex min-h-svh bg-ink">
@@ -345,12 +390,14 @@ export function PanelShell({ children }: { children: React.ReactNode }) {
       </Dialog.Root>
 
       <div className="flex min-w-0 flex-1 flex-col">
-        <div className="flex items-center justify-center gap-2 border-b border-volt/20 bg-volt/[0.07] px-4 py-1.5 text-center text-[11px] text-ink-light">
-          <FlaskConical className="h-3.5 w-3.5 shrink-0 text-volt" />
-          <span>
-            <strong className="font-semibold text-volt">Modo demostración.</strong> Datos ficticios; los cambios viven solo en esta pestaña y se pierden al recargar.
-          </span>
-        </div>
+        {mode === "demo" && (
+          <div className="flex items-center justify-center gap-2 border-b border-volt/20 bg-volt/[0.07] px-4 py-1.5 text-center text-[11px] text-ink-light">
+            <FlaskConical className="h-3.5 w-3.5 shrink-0 text-volt" />
+            <span>
+              <strong className="font-semibold text-volt">Modo demostración.</strong> Datos ficticios; los cambios viven solo en esta pestaña y se pierden al recargar.
+            </span>
+          </div>
+        )}
         <Header onOpenMenu={() => setMenuOpen(true)} />
         <motion.main
           key={`${activeId}:${pathname}`}

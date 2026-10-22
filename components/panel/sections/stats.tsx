@@ -1,12 +1,23 @@
 "use client";
 
-import { Eye, Inbox, Percent, Trophy } from "lucide-react";
+import { BarChart3, Eye, Inbox, Percent, Trophy } from "lucide-react";
 import { usePanel } from "@/components/panel/store";
-import { Card, DemoNote, KpiCard, SectionHeader } from "@/components/panel/ui/misc";
+import { Card, DemoNote, EmptyState, KpiCard, SectionHeader } from "@/components/panel/ui/misc";
 import { AreaChart, BarChart, HBarChart } from "@/components/panel/charts";
 
 export function Stats() {
   const { ws } = usePanel();
+  if (!ws.stats.length)
+    return (
+      <div className="flex flex-col gap-6">
+        <SectionHeader title="Estadísticas" description="Cómo te encuentran los clientes y cuántos terminan escribiéndote." />
+        <EmptyState
+          icon={BarChart3}
+          title="Todavía no hay métricas"
+          description="Empezaremos a contar las visitas a tu perfil y las solicitudes que recibes. Vuelve en unos días para ver cómo te encuentran los clientes."
+        />
+      </div>
+    );
   const visits = ws.stats.reduce((s, m) => s + m.visits, 0);
   const requests = ws.stats.reduce((s, m) => s + m.requests, 0);
   const conversion = visits ? (requests / visits) * 100 : 0;

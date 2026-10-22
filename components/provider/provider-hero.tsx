@@ -220,38 +220,40 @@ export function ProviderHero({ provider }: { provider: Provider }) {
       </div>
 
       {/* Layer 3 — cut-out subject, allowed to break out of the frame's bottom edge */}
-      <motion.div
-        style={subject}
-        className={cn(
-          "pointer-events-none absolute -bottom-[7svh] flex",
-          s.anchor === "right" ? "-right-[6vw] justify-end" : "inset-x-0 justify-center"
-        )}
-      >
+      {s.src && (
         <motion.div
-          initial={{ opacity: 0, y: 120, scale: 0.94 }}
-          animate={{ opacity: 1, y: 0, scale: 1 }}
-          transition={{ duration: 1.5, delay: 0.55, ease: EASE }}
-          className="relative"
+          style={subject}
+          className={cn(
+            "pointer-events-none absolute -bottom-[7svh] flex",
+            s.anchor === "right" ? "-right-[6vw] justify-end" : "inset-x-0 justify-center"
+          )}
         >
-          <div
-            aria-hidden
-            className="absolute inset-x-[20%] bottom-[15%] top-[25%] rounded-full bg-volt/10 blur-[100px]"
-          />
-          {/* Shadow lives on the wrapper: on the masked <img> itself it would be clipped to a visible box. */}
-          <div className="relative [filter:drop-shadow(0_30px_60px_rgba(0,0,0,0.65))]">
-            <Image
-              src={s.src}
-              alt={s.alt}
-              width={s.width}
-              height={s.height}
-              priority
-              sizes="(max-width: 768px) 150vw, 100vw"
-              className="w-auto max-w-none object-contain object-bottom [mask-image:linear-gradient(to_bottom,black_82%,transparent_100%)]"
-              style={{ height: subjectHeight }}
+          <motion.div
+            initial={{ opacity: 0, y: 120, scale: 0.94 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            transition={{ duration: 1.5, delay: 0.55, ease: EASE }}
+            className="relative"
+          >
+            <div
+              aria-hidden
+              className="absolute inset-x-[20%] bottom-[15%] top-[25%] rounded-full bg-volt/10 blur-[100px]"
             />
-          </div>
+            {/* Shadow lives on the wrapper: on the masked <img> itself it would be clipped to a visible box. */}
+            <div className="relative [filter:drop-shadow(0_30px_60px_rgba(0,0,0,0.65))]">
+              <Image
+                src={s.src}
+                alt={s.alt}
+                width={s.width}
+                height={s.height}
+                priority
+                sizes="(max-width: 768px) 150vw, 100vw"
+                className="w-auto max-w-none object-contain object-bottom [mask-image:linear-gradient(to_bottom,black_82%,transparent_100%)]"
+                style={{ height: subjectHeight }}
+              />
+            </div>
+          </motion.div>
         </motion.div>
-      </motion.div>
+      )}
 
       {/* Layer 4 (front) — outlined copy at the same position, drawn over the subject */}
       <motion.div

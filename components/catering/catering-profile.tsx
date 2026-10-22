@@ -27,12 +27,14 @@ export function CateringProfile({ provider }: { provider: Provider & { catering:
       <MenuShowcase provider={provider} />
       <EventCalculator provider={provider} />
       <CateringAvailability provider={provider} />
-      <CateringPromo provider={provider} />
-      <Gallery
-        provider={provider}
-        title="Gastronomía que se ve tan bien como sabe"
-        description="Buffets, mesas, decoración y la cocina en plena acción, en eventos reales."
-      />
+      {provider.promo.discount > 0 && <CateringPromo provider={provider} />}
+      {provider.gallery.length > 0 && (
+        <Gallery
+          provider={provider}
+          title="Gastronomía que se ve tan bien como sabe"
+          description="Buffets, mesas, decoración y la cocina en plena acción, en eventos reales."
+        />
+      )}
       <ExperienceTimeline />
       <Team
         provider={provider}
