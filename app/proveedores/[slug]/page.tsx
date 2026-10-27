@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { PROVIDERS, getProvider } from "@/lib/providers";
+import { getPublicProvider, getPublicProviders } from "@/lib/data/public-providers";
 import { Navbar } from "@/components/sections/navbar";
 import { Footer } from "@/components/sections/footer";
 import { ProviderHero } from "@/components/provider/provider-hero";
@@ -19,15 +19,17 @@ import { CateringProfile } from "@/components/catering/catering-profile";
 
 type Params = Promise<{ slug: string }>;
 
-export const dynamicParams = false;
+// Pages are rebuilt at most once a minute, so panel changes reach the public profile shortly after saving.
+export const revalidate = 60;
+export const dynamicParams = true;
 
-export function generateStaticParams() {
-  return PROVIDERS.map((p) => ({ slug: p.slug }));
+export async function generateStaticParams() {
+  return (await getPublicProviders()).map((p) => ({ slug: p.slug }));
 }
 
 export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
   const { slug } = await params;
-  const provider = getProvider(slug);
+  const provider = await getPublicProvider(slug);
   if (!provider) return {};
   return {
     title: `${provider.fullName} — VIBRA`,
@@ -42,7 +44,7 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
 
 export default async function ProviderPage({ params }: { params: Params }) {
   const { slug } = await params;
-  const provider = getProvider(slug);
+  const provider = await getPublicProvider(slug);
   if (!provider) notFound();
 
   if (provider.catering) {
@@ -60,12 +62,12 @@ export default async function ProviderPage({ params }: { params: Params }) {
         <ProviderHero provider={provider} />
         <ProviderInfo provider={provider} />
         <Booking provider={provider} />
-        <Promo provider={provider} />
-        <Gallery provider={provider} />
-        <Videos provider={provider} />
-        <Team provider={provider} />
-        <Reviews provider={provider} />
-        <Packages provider={provider} />
+        {provider.promo.discount > 0 && <Promo provider={provider} />}
+        {provider.gallery.length > 0 && <Gallery provider={provider} />}
+        {provider.videos.length > 0 && <Videos provider={provider} />}
+        {provider.team.length > 0 && <Team provider={provider} />}
+        {provider.reviews.length > 0 && <Reviews provider={provider} />}
+        {provider.packages.length > 0 && <Packages provider={provider} />}
         <ProviderCta provider={provider} />
         <Footer />
         <MobileBookBar provider={provider} />

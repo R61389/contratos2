@@ -172,7 +172,7 @@ export function Calendar({
         ))}
         <span className="ml-auto flex items-center gap-2 text-volt">
           <Sparkles className="h-3.5 w-3.5" />
-          {note ?? <>Lun a jue −{provider.promo.discount}%</>}
+          {note ?? (provider.promo.discount > 0 ? <>Lun a jue −{provider.promo.discount}%</> : null)}
         </span>
       </div>
     </div>

@@ -34,14 +34,16 @@ export function ProviderCard({
             className="object-cover opacity-60 transition-transform duration-700 group-hover:scale-110"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/40 to-transparent" />
-          <Image
-            src={p.subject.src}
-            alt={p.subject.alt}
-            width={p.subject.width}
-            height={p.subject.height}
-            sizes="320px"
-            className="absolute bottom-0 left-1/2 h-[88%] w-auto max-w-none -translate-x-1/2 object-contain object-bottom transition-transform duration-700 ease-out group-hover:scale-105"
-          />
+          {p.subject.src && (
+            <Image
+              src={p.subject.src}
+              alt={p.subject.alt}
+              width={p.subject.width}
+              height={p.subject.height}
+              sizes="320px"
+              className="absolute bottom-0 left-1/2 h-[88%] w-auto max-w-none -translate-x-1/2 object-contain object-bottom transition-transform duration-700 ease-out group-hover:scale-105"
+            />
+          )}
           <span className="absolute right-3 top-3 rounded-full bg-ink/70 px-2.5 py-1 text-[11px] font-medium text-ink-light backdrop-blur">
             {p.category}
           </span>

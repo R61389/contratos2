@@ -44,7 +44,7 @@ export function estimatePrice(provider: Provider, date: Date) {
     { label: "Precio base", amount: base },
   ];
   let total = base;
-  if (day >= 1 && day <= 4) {
+  if (day >= 1 && day <= 4 && provider.promo.discount > 0) {
     const discount = -(base * provider.promo.discount) / 100;
     lines.push({ label: `Oferta lunes a jueves (−${provider.promo.discount}%)`, amount: discount, accent: true });
     total += discount;

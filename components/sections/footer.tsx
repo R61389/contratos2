@@ -39,6 +39,7 @@ const COLUMNS: { title: string; links: { label: string; href?: string }[] }[] = 
       { label: "Proveedores", href: "/proveedores" },
       { label: "Cómo funciona", href: "/#como-funciona" },
       { label: "Testimonios", href: "/#testimonios" },
+      { label: "Panel de proveedores", href: "/panel" },
     ],
   },
   {
