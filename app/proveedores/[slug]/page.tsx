@@ -16,6 +16,9 @@ import { ProviderCta } from "@/components/provider/provider-cta";
 import { MobileBookBar } from "@/components/provider/mobile-book-bar";
 import { ProviderMusic } from "@/components/provider/music-player";
 import { CateringProfile } from "@/components/catering/catering-profile";
+import { ArtistConcerts } from "@/components/concerts/artist-concerts";
+import { getArtistConcerts } from "@/lib/data/public-concerts";
+import { isUpcoming } from "@/lib/concerts";
 
 type Params = Promise<{ slug: string }>;
 
@@ -47,6 +50,8 @@ export default async function ProviderPage({ params }: { params: Params }) {
   const provider = await getPublicProvider(slug);
   if (!provider) notFound();
 
+  const concerts = (await getArtistConcerts(provider.slug)).filter((c) => isUpcoming(c));
+
   if (provider.catering) {
     return (
       <main className="relative overflow-x-clip">
@@ -62,6 +67,7 @@ export default async function ProviderPage({ params }: { params: Params }) {
         <ProviderHero provider={provider} />
         <ProviderInfo provider={provider} />
         <Booking provider={provider} />
+        {concerts.length > 0 && <ArtistConcerts concerts={concerts} />}
         {provider.promo.discount > 0 && <Promo provider={provider} />}
         {provider.gallery.length > 0 && <Gallery provider={provider} />}
         {provider.videos.length > 0 && <Videos provider={provider} />}
