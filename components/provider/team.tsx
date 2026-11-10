@@ -97,26 +97,31 @@ function MemberCard({ member, index }: { member: TeamMember; index: number }) {
   );
 }
 
+const TEAM_TITLE = "Las personas detrás de la experiencia";
+const TEAM_DESCRIPTION = "Profesionales con años de escenario, listos para darle vida a tu celebración.";
+
 export function Team({
   provider,
-  title = "Las personas detrás de la experiencia",
-  description = "Profesionales con años de escenario, listos para darle vida a tu celebración.",
+  title = TEAM_TITLE,
+  description = TEAM_DESCRIPTION,
 }: {
   provider: Provider;
   title?: React.ReactNode;
   description?: string;
 }) {
-  const cols = provider.team.length >= 4 ? "lg:grid-cols-4" : provider.team.length === 3 ? "lg:grid-cols-3" : "lg:grid-cols-2 lg:max-w-3xl";
+  const n = provider.team.length;
+  const cols = n >= 4 ? "sm:grid-cols-2 lg:grid-cols-4" : n === 3 ? "sm:grid-cols-2 lg:grid-cols-3" : n === 2 ? "sm:grid-cols-2 lg:max-w-3xl" : "max-w-sm";
+  const solo = n === 1;
   return (
     <section id="integrantes" className="relative scroll-mt-24 py-24 sm:py-32">
       <div className="mx-auto max-w-6xl px-6">
         <SectionHeading
           eyebrow={provider.teamTitle}
-          title={title}
-          description={description}
+          title={solo && title === TEAM_TITLE ? "La persona detrás de la cabina" : title}
+          description={solo && description === TEAM_DESCRIPTION ? "Años de escenario y una selección musical pensada para tu celebración." : description}
           titleClassName="font-general"
         />
-        <div className={cn("mx-auto mt-14 grid gap-5 sm:grid-cols-2", cols)}>
+        <div className={cn("mx-auto mt-14 grid gap-5", cols)}>
           {provider.team.map((m, i) => (
             <MemberCard key={m.name} member={m} index={i} />
           ))}
