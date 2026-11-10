@@ -9,6 +9,7 @@ import { createHash } from "node:crypto";
 import { writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { PROVIDERS, type Provider } from "../lib/providers";
+import { CONCERTS } from "../lib/concerts";
 
 function uuidFrom(key: string) {
   const h = createHash("md5").update(key).digest("hex");
@@ -85,6 +86,20 @@ for (const p of PROVIDERS) {
   lines.push(`insert into public.provider_settings (provider_id) values (${q(id)}) on conflict do nothing;`);
   lines.push("");
 }
+
+// Conciertos: requieren la migración 20261110000000_concerts.sql.
+lines.push("-- Conciertos");
+for (const c of CONCERTS) {
+  lines.push(
+    `insert into public.concerts (id, provider_id, slug, title, description, date, start_time, end_time, venue, city, address, poster_url, ticket_url, price) values (` +
+      [
+        q(uuidFrom(`concert:${c.slug}`)), q(uuidFrom(`provider:${c.artistSlug}`)), q(c.slug), q(c.title), q(c.description), q(c.date), q(c.start), q(c.end),
+        q(c.venue), q(c.city), q(c.address), q(c.posterUrl), q(c.ticketUrl), c.price === null ? "null" : c.price,
+      ].join(", ") +
+      ") on conflict (id) do nothing;"
+  );
+}
+lines.push("");
 
 const out = join(__dirname, "..", "supabase", "seed.sql");
 writeFileSync(out, lines.join("\n"));

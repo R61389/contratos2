@@ -46,6 +46,12 @@ async function uploadLocalImages(sb: SupabaseClient, next: ProviderWorkspace): P
     revokeLocalUrl(m.url);
     ws = { ...ws, media: ws.media.map((x) => (x.id === m.id ? { ...x, url, storagePath: path, source: "demo" } : x)) };
   }
+  for (const c of ws.concerts) {
+    if (!c.posterUrl?.startsWith("blob:")) continue;
+    const { url } = await upload(sb, ws.id, c.posterUrl, `afiche-${c.id}`);
+    revokeLocalUrl(c.posterUrl);
+    ws = { ...ws, concerts: ws.concerts.map((x) => (x.id === c.id ? { ...x, posterUrl: url } : x)) };
+  }
   for (const key of ["logoUrl", "coverUrl"] as const) {
     const value = ws.profile[key];
     if (!value?.startsWith("blob:")) continue;

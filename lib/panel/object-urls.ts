@@ -24,6 +24,7 @@ export function revokeWorkspaceUrls(ws: ProviderWorkspace) {
   ws.media.forEach((m) => revokeLocalUrl(m.url));
   revokeLocalUrl(ws.profile.logoUrl);
   revokeLocalUrl(ws.profile.coverUrl);
+  ws.concerts.forEach((c) => revokeLocalUrl(c.posterUrl));
 }
 
 export function revokeAll() {

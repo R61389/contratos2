@@ -60,6 +60,7 @@ function withUploads(current: ProviderWorkspace, saved: ProviderWorkspace): Prov
       logoUrl: current.profile.logoUrl?.startsWith("blob:") ? saved.profile.logoUrl : current.profile.logoUrl,
       coverUrl: current.profile.coverUrl?.startsWith("blob:") ? saved.profile.coverUrl : current.profile.coverUrl,
     },
+    concerts: current.concerts.map((c) => (c.posterUrl?.startsWith("blob:") ? { ...c, posterUrl: saved.concerts.find((x) => x.id === c.id)?.posterUrl ?? c.posterUrl } : c)),
   };
 }
 

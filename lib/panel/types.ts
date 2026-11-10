@@ -139,6 +139,28 @@ export interface MusicTrack {
   youtubeId: string;
 }
 
+/** A concert on the public billboard (/conciertos). Times are Bolivian time; `end` before `start` means it ends the next day. */
+export interface PanelConcert {
+  id: string;
+  /** Address of its public page, fixed when it is created. */
+  slug: string;
+  title: string;
+  description: string;
+  date: string;
+  start: string;
+  end: string;
+  venue: string;
+  city: string;
+  address: string;
+  posterUrl: string | null;
+  ticketUrl: string | null;
+  /** null: to be confirmed · 0: free entry */
+  price: number | null;
+  published: boolean;
+  /** Fans who marked "Me interesa"; only visitors change it. */
+  interested: number;
+}
+
 export interface Promotion {
   id: string;
   name: string;
@@ -217,6 +239,10 @@ export interface ProviderWorkspace {
   galleryOrder: string[];
   /** Songs for the profile's player; the first one plays first. */
   music: MusicTrack[];
+  /** Concerts for the public billboard; only for musicians and DJs. */
+  concerts: PanelConcert[];
+  /** False while the database doesn't have the concerts table yet. */
+  concertsEnabled: boolean;
   coverMediaId: string | null;
   availability: Availability;
   requests: BookingRequest[];

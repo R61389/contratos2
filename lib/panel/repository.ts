@@ -9,6 +9,7 @@ import type {
   Faq,
   MediaItem,
   MusicTrack,
+  PanelConcert,
   Package,
   PanelNotification,
   PriceTier,
@@ -38,6 +39,8 @@ export function rowsToWorkspace(r: {
   addons: Row[];
   tiers: Row[];
   music: Row[];
+  /** null when the database doesn't have the concerts table yet. */
+  concerts: Row[] | null;
   promotions: Row[];
   faqs: Row[];
   overrides: Row[];
@@ -128,6 +131,26 @@ export function rowsToWorkspace(r: {
     galleryOrder: media.map((m) => m.id),
     coverMediaId: (p.cover_media_id as string) ?? null,
     music: r.music.map((m): MusicTrack => ({ id: m.id as string, title: m.title as string, youtubeId: m.youtube_id as string })),
+    concerts: (r.concerts ?? []).map(
+      (c): PanelConcert => ({
+        id: c.id as string,
+        slug: c.slug as string,
+        title: c.title as string,
+        description: (c.description as string) ?? "",
+        date: c.date as string,
+        start: hhmm(c.start_time),
+        end: hhmm(c.end_time),
+        venue: c.venue as string,
+        city: (c.city as string) ?? "",
+        address: (c.address as string) ?? "",
+        posterUrl: (c.poster_url as string) ?? null,
+        ticketUrl: (c.ticket_url as string) ?? null,
+        price: num(c.price),
+        published: Boolean(c.published),
+        interested: Number(c.interested_count ?? 0),
+      })
+    ),
+    concertsEnabled: r.concerts !== null,
     availability: {
       restDays: ((p.rest_days as number[]) ?? []).map(Number),
       hours: { start: (p.hours_start as string) ?? "09:00", end: (p.hours_end as string) ?? "23:00" },
@@ -258,6 +281,28 @@ export const COLLECTIONS: { table: string; rows: (ws: ProviderWorkspace) => Row[
   { table: "price_tiers", rows: (ws) => ws.tiers.map((t, i) => ({ id: t.id, provider_id: ws.id, basis: t.basis, min: t.min, max: t.max, price: t.price, position: i })) },
   { table: "music_tracks", rows: (ws) => ws.music.map((m, i) => ({ id: m.id, provider_id: ws.id, title: m.title, youtube_id: m.youtubeId, position: i })) },
   {
+    table: "concerts",
+    // The fan count is left out: only visitors change it, and the database ignores the artist's value.
+    rows: (ws) =>
+      ws.concerts.map((c) => ({
+        id: c.id,
+        provider_id: ws.id,
+        slug: c.slug,
+        title: c.title,
+        description: c.description,
+        date: c.date,
+        start_time: c.start,
+        end_time: c.end,
+        venue: c.venue,
+        city: c.city,
+        address: c.address,
+        poster_url: c.posterUrl,
+        ticket_url: c.ticketUrl,
+        price: c.price,
+        published: c.published,
+      })),
+  },
+  {
     table: "promotions",
     rows: (ws) =>
       ws.promotions.map((p) => ({
@@ -289,6 +334,16 @@ async function all(sb: SupabaseClient, table: string, providerId: string, order?
   return (data ?? []) as Row[];
 }
 
+/** A table added by a later migration: until it runs, the panel works without that feature instead of failing. */
+async function optional(rows: Promise<Row[]>): Promise<Row[] | null> {
+  try {
+    return await rows;
+  } catch (e) {
+    if (/does not exist|schema cache|Could not find/i.test((e as Error).message)) return null;
+    throw e;
+  }
+}
+
 /** Every provider the signed-in user manages, fully loaded. */
 export async function loadWorkspaces(sb: SupabaseClient, userId: string): Promise<ProviderWorkspace[]> {
   const { data: members, error } = await sb.from("provider_members").select("provider_id").eq("user_id", userId);
@@ -303,7 +358,7 @@ export async function loadWorkspace(sb: SupabaseClient, providerId: string): Pro
     sb.from("provider_settings").select("*").eq("provider_id", providerId).maybeSingle(),
   ]);
   if (error || !provider) throw new Error(error?.message ?? "Proveedor no encontrado");
-  const [media, services, packages, addons, tiers, music, promotions, faqs, overrides, requests, notifications] = await Promise.all([
+  const [media, services, packages, addons, tiers, music, promotions, faqs, overrides, requests, notifications, concerts] = await Promise.all([
     all(sb, "media", providerId, "position"),
     all(sb, "services", providerId, "position"),
     all(sb, "packages", providerId, "position"),
@@ -315,6 +370,7 @@ export async function loadWorkspace(sb: SupabaseClient, providerId: string): Pro
     all(sb, "availability_overrides", providerId),
     all(sb, "booking_requests", providerId, "event_date"),
     all(sb, "notifications", providerId, "created_at"),
+    optional(all(sb, "concerts", providerId, "date")),
   ]);
-  return rowsToWorkspace({ provider, settings, media, services, packages, addons, tiers, music, promotions, faqs, overrides, requests, notifications: notifications.reverse() });
+  return rowsToWorkspace({ provider, settings, media, services, packages, addons, tiers, music, concerts, promotions, faqs, overrides, requests, notifications: notifications.reverse() });
 }

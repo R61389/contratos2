@@ -11,6 +11,7 @@ const LINKS = [
   { label: "Inicio", href: "/#inicio" },
   { label: "Servicios", href: "/#servicios" },
   { label: "Proveedores", href: "/proveedores" },
+  { label: "Conciertos", href: "/conciertos" },
   { label: "Cómo funciona", href: "/#como-funciona" },
   { label: "Paquetes", href: "/#paquetes" },
   { label: "Contacto", href: "/#contacto" },
@@ -51,15 +52,15 @@ export function Navbar() {
           </span>
         </Link>
 
-        <nav className="hidden items-center gap-1 lg:flex">
+        <nav className="hidden items-center gap-0.5 lg:flex xl:gap-2">
           {LINKS.map((link) => (
             <Link
               key={link.href}
               href={link.href}
-              className="group relative rounded-full px-4 py-2 text-sm text-ink-light/80 transition-colors duration-300 hover:text-white"
+              className="group relative whitespace-nowrap rounded-full px-2.5 py-2 text-sm text-ink-light/80 transition-colors duration-300 hover:text-white"
             >
               {link.label}
-              <span className="absolute inset-x-4 -bottom-0.5 h-px scale-x-0 bg-volt transition-transform duration-300 group-hover:scale-x-100" />
+              <span className="absolute inset-x-2.5 -bottom-0.5 h-px scale-x-0 bg-volt transition-transform duration-300 group-hover:scale-x-100" />
             </Link>
           ))}
         </nav>

@@ -13,6 +13,7 @@ El sitio funciona en dos modos:
 | --- | --- |
 | `supabase/migrations/20261022000000_init.sql` | Tablas, reglas de seguridad (RLS) y funciones. |
 | `supabase/migrations/20261022000100_storage.sql` | Bucket `provider-media` para las fotos que suben los proveedores. |
+| `supabase/migrations/20261110000000_concerts.sql` | Cartelera de conciertos (`/conciertos`) y contador de fans interesados. |
 | `supabase/seed.sql` | Los 10 proveedores actuales del sitio, para empezar con datos. Se regenera con `npm run db:seed-sql`. |
 | `supabase/tests/` | Pruebas de seguridad (`rls_test.sql`) y de guardado de punta a punta (`sync_e2e.ts`). |
 
@@ -30,7 +31,8 @@ Reglas importantes que aplica la base de datos (no sólo la app):
 1. **Crear el proyecto** en [supabase.com](https://supabase.com) → *New project*. Elige la región más cercana
    (São Paulo) y guarda la contraseña de la base de datos.
 2. **Crear las tablas.** En el proyecto, abre *SQL Editor* → *New query*, pega el contenido de
-   `supabase/migrations/20261022000000_init.sql` y pulsa *Run*. Repite con `20261022000100_storage.sql`.
+   `supabase/migrations/20261022000000_init.sql` y pulsa *Run*. Repite con `20261022000100_storage.sql` y luego con
+   `20261110000000_concerts.sql`.
 3. **Cargar los proveedores actuales.** En otra consulta pega `supabase/seed.sql` y pulsa *Run*.
    Se puede volver a ejecutar sin duplicar nada y nunca pisa lo que un proveedor ya editó.
 4. **Cerrar el registro público.** *Authentication* → *Sign In / Providers* → desactiva *Allow new users to sign up*.
@@ -92,6 +94,15 @@ update providers set rating = 4.9, reviews_count = 120 where slug = 'dj-nightflo
 
 Lo que el panel todavía no edita (equipo, reseñas, videos, y los platos y fotos de los menús de catering) se sigue
 tomando de `lib/providers.ts`.
+
+## Conciertos
+
+- Los músicos y DJs publican sus conciertos desde **Panel → Conciertos**. VIBRA arma el afiche con su foto, o usan uno propio.
+- Aparecen en `/conciertos`, en una página por concierto y en el perfil del artista.
+- Los visitantes pulsan **Me interesa**: el contador sube en la base de datos y el artista lo ve en su panel. El artista
+  no puede cambiar ese número.
+- Si el proyecto ya estaba funcionando antes de esta función, ejecuta solo `20261110000000_concerts.sql` y vuelve a
+  ejecutar `supabase/seed.sql` (agrega el concierto de Meraya sin tocar lo demás).
 
 ## Pendiente para próximas etapas
 
