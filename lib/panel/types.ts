@@ -99,6 +99,9 @@ export interface RequestEvent {
 export interface BookingRequest {
   id: string;
   clientName: string;
+  /** WhatsApp number (digits) and e-mail left by clients who request from the public site. */
+  clientPhone?: string;
+  clientEmail?: string;
   eventType: string;
   /** yyyy-mm-dd */
   date: string;

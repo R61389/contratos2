@@ -161,6 +161,8 @@ export function rowsToWorkspace(r: {
       (b): BookingRequest => ({
         id: b.id as string,
         clientName: b.client_name as string,
+        clientPhone: (b.client_phone as string) ?? undefined,
+        clientEmail: (b.client_email as string) ?? undefined,
         eventType: b.event_type as string,
         date: b.event_date as string,
         start: hhmm(b.start_time),
@@ -319,6 +321,9 @@ export const COLLECTIONS: { table: string; rows: (ws: ProviderWorkspace) => Row[
         venue: r.venue, guests: r.guests, service_id: r.serviceId, service_name: r.serviceName, proposed_price: r.proposedPrice, message: r.message,
         status: r.status, source: r.source, counter_offer: r.counterOffer ?? null, change_request: r.changeRequest ?? null, reject_reason: r.rejectReason ?? null,
         history: r.history, received_at: r.receivedAt,
+        // Only sent when known, so the panel keeps saving on databases without the public-requests migration.
+        ...(r.clientPhone !== undefined ? { client_phone: r.clientPhone } : {}),
+        ...(r.clientEmail !== undefined ? { client_email: r.clientEmail } : {}),
       })),
   },
   { table: "notifications", rows: (ws) => ws.notifications.map((n) => ({ id: n.id, provider_id: ws.id, title: n.title, body: n.body, href: n.href, read: n.read, created_at: n.at })) },

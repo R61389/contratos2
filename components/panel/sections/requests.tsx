@@ -12,7 +12,9 @@ import {
   Inbox,
   MapPin,
   MessageSquareText,
+  MessageCircle,
   PenLine,
+  Phone,
   Search,
   UserCheck,
   Users,
@@ -26,6 +28,7 @@ import { ActionMenu, Card, DemoNote, EmptyState, SectionHeader, StatusBadge } fr
 import { ConfirmDialog, Modal, PanelButton } from "@/components/panel/ui/modal";
 import { Field, MoneyInput, TextArea } from "@/components/panel/ui/fields";
 import { formatBs, longDate, relativeTime } from "@/lib/panel/format";
+import { whatsappLink } from "@/lib/format";
 import { parseAmount } from "@/lib/panel/logic";
 import {
   acceptRequest,
@@ -118,8 +121,13 @@ function RequestCard({ r, onOpen, onDialog }: { r: BookingRequest; onOpen: () =>
                   {r.guests} invitados
                 </span>
               )}
+              {r.clientPhone && (
+                <span className="flex items-center gap-1.5">
+                  <Phone className="h-3.5 w-3.5" />+{r.clientPhone}
+                </span>
+              )}
             </div>
-            <p className="mt-3 line-clamp-2 text-sm text-ink-light">“{r.message}”</p>
+            {r.message && <p className="mt-3 line-clamp-2 text-sm text-ink-light">“{r.message}”</p>}
           </button>
           <div className="flex shrink-0 flex-col items-end gap-2">
             <span className="text-right">
@@ -174,8 +182,19 @@ function RequestCard({ r, onOpen, onDialog }: { r: BookingRequest; onOpen: () =>
   );
 }
 
+/** Message the provider sends the client on WhatsApp, depending on where the request stands. */
+function replyText(r: BookingRequest, business: string) {
+  const when = `${r.eventType.toLowerCase()} del ${longDate(r.date).toLowerCase()}`;
+  const price = formatBs(r.counterOffer?.price ?? r.proposedPrice);
+  if (r.status === "aceptada") return `Hola ${r.clientName}, soy ${business}. Aceptamos tu solicitud para tu ${when} por ${price}. ¿Confirmamos la reserva?`;
+  if (r.status === "confirmada") return `Hola ${r.clientName}, soy ${business}. Tu reserva para tu ${when} está confirmada. ¡Gracias por elegirnos en VIBRA!`;
+  if (r.status === "rechazada") return `Hola ${r.clientName}, soy ${business}. Lamentablemente no podemos atender tu ${when}. ¡Gracias por escribirnos!`;
+  return `Hola ${r.clientName}, soy ${business}. Recibimos en VIBRA tu solicitud para tu ${when}. Te escribo para coordinar los detalles.`;
+}
+
 function Detail({ r, onDialog }: { r: BookingRequest; onDialog: (d: Dialog) => void }) {
   const a = actionsFor(r.status);
+  const { ws } = usePanel();
   const rows: [string, React.ReactNode][] = [
     ["Tipo de evento", r.eventType],
     ["Fecha", `${longDate(r.date)}${r.days > 1 ? ` · ${r.days} días` : ""}`],
@@ -185,6 +204,8 @@ function Detail({ r, onDialog }: { r: BookingRequest; onDialog: (d: Dialog) => v
     ["Servicio", r.serviceName],
     ["Precio solicitado", formatBs(r.proposedPrice)],
     ["Recibida", relativeTime(r.receivedAt)],
+    ...(r.clientPhone ? ([["WhatsApp del cliente", `+${r.clientPhone}`]] as [string, React.ReactNode][]) : []),
+    ...(r.clientEmail ? ([["Correo del cliente", r.clientEmail]] as [string, React.ReactNode][]) : []),
   ];
   return (
     <div className="flex flex-col gap-6">
@@ -200,10 +221,22 @@ function Detail({ r, onDialog }: { r: BookingRequest; onDialog: (d: Dialog) => v
           </div>
         ))}
       </dl>
-      <div>
-        <p className="text-xs text-ink-mid">Mensaje del cliente</p>
-        <p className="mt-1 rounded-2xl border border-white/[0.08] bg-white/[0.03] p-4 text-sm leading-relaxed text-ink-light">“{r.message}”</p>
-      </div>
+      {r.message && (
+        <div>
+          <p className="text-xs text-ink-mid">Mensaje del cliente</p>
+          <p className="mt-1 rounded-2xl border border-white/[0.08] bg-white/[0.03] p-4 text-sm leading-relaxed text-ink-light">“{r.message}”</p>
+        </div>
+      )}
+      {r.clientPhone && (
+        <a
+          href={whatsappLink(r.clientPhone, replyText(r, ws.profile.businessName))}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex h-11 w-fit items-center gap-2 rounded-full border border-emerald-400/40 px-5 text-sm font-medium text-emerald-300 transition-colors hover:bg-emerald-400/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-volt"
+        >
+          <MessageCircle className="h-4 w-4" /> Responder por WhatsApp
+        </a>
+      )}
       {r.counterOffer && (
         <div className="rounded-2xl border border-sky-300/30 bg-sky-300/[0.06] p-4">
           <p className="text-xs font-semibold uppercase tracking-wider text-sky-200">Tu propuesta</p>

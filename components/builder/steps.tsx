@@ -34,6 +34,7 @@ import {
 } from "@/lib/event-builder";
 import { DatePicker } from "@/components/builder/date-picker";
 import { fromDateKey, toDateKey, type Draft } from "@/components/builder/use-draft";
+import { SendRequests } from "@/components/builder/send-requests";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
@@ -463,7 +464,7 @@ export function StepSummary({ draft, providers, onReset }: StepProps & { onReset
                 </span>
                 <span className="flex items-center justify-between gap-4 sm:justify-end">
                   <span className="font-general text-lg font-semibold text-white">{formatBs(price)}</span>
-                  <Button asChild size="sm">
+                  <Button asChild size="sm" variant="outline">
                     <a
                       href={whatsappLink(
                         provider.whatsapp,
@@ -472,7 +473,7 @@ export function StepSummary({ draft, providers, onReset }: StepProps & { onReset
                       target="_blank"
                       rel="noopener noreferrer"
                     >
-                      Solicitar
+                      WhatsApp
                     </a>
                   </Button>
                 </span>
@@ -480,6 +481,15 @@ export function StepSummary({ draft, providers, onReset }: StepProps & { onReset
             );
           })}
         </ul>
+      )}
+
+      {lines.length > 0 && (
+        <SendRequests
+          items={lines.map((l) => ({ serviceLabel: l.service.label, provider: l.provider, price: l.price }))}
+          eventType={type?.label ?? "Evento"}
+          dateKey={draft.date}
+          guests={draft.guests}
+        />
       )}
 
       <div className="mt-8 flex flex-wrap gap-3">
